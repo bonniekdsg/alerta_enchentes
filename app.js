@@ -429,7 +429,14 @@ function filtrarMunicipios(filtro) {
   document.querySelectorAll('.btn-filtro').forEach(btn => {
     btn.classList.remove('active');
   });
-  document.querySelector(`.btn-filtro[data-filtro="${filtro}"]`).classList.add('active');
+  
+  // Verificar se o botão de filtro existe
+  const btnFiltro = document.querySelector(`.btn-filtro[data-filtro="${filtro}"]`);
+  if (btnFiltro) {
+    btnFiltro.classList.add('active');
+  } else {
+    console.error(`Botão de filtro para "${filtro}" não encontrado.`);
+  }
   
   // Verificar se há municípios com alertas para logging
   if (filtro === 'com-alertas') {
@@ -517,22 +524,30 @@ function filtrarMunicipios(filtro) {
       const container = card.closest('[data-risco]');
       if (container) {
         risco = container.getAttribute('data-risco');
+        console.log(`Risco encontrado no container pai: ${risco}`);
       }
       
       // Se não encontrar no container, verificar no próprio card
       if (!risco) {
         risco = card.getAttribute('data-risco');
+        if (risco) {
+          console.log(`Risco encontrado no card: ${risco}`);
+        }
       }
       
       // Se não encontrar no card, verificar em elementos filhos
       if (!risco && card.querySelector('[data-risco]')) {
         risco = card.querySelector('[data-risco]').getAttribute('data-risco');
+        if (risco) {
+          console.log(`Risco encontrado em elemento filho: ${risco}`);
+        }
       }
       
       // Se ainda não encontrou, mas temos o ID do município, usar o risco do dadosMunicipios
       if (!risco && municipioId && dadosMunicipios[municipioId]) {
         if (dadosMunicipios[municipioId].risco) {
           risco = dadosMunicipios[municipioId].risco;
+          console.log(`Risco obtido do objeto dadosMunicipios.risco: ${risco}`);
         } else if (dadosMunicipios[municipioId].status) {
           const status = dadosMunicipios[municipioId].status.toLowerCase();
           if (status === 'crítico' || status === 'critico') {
@@ -542,6 +557,7 @@ function filtrarMunicipios(filtro) {
           } else {
             risco = 'baixo';
           }
+          console.log(`Risco derivado do status: ${status} -> ${risco}`);
         }
       }
       
@@ -997,12 +1013,16 @@ function carregarAlertas(alertas, municipioId = null) {
 // Função para ordenar os cards dos municípios por nível de risco
 function ordenarCardsPorRisco() {
   const container = document.getElementById('lista-municipios');
-  if (!container) return;
+  if (!container) {
+    console.error('Container lista-municipios não encontrado. Não é possível ordenar cards.');
+    return;
+  }
   
   console.log('Ordenando cards por nível de risco...');
   
   // Obter todos os cards
   const cards = Array.from(container.children);
+  console.log(`Total de cards para ordenar: ${cards.length}`);
   
   // Definir a ordem de prioridade dos riscos
   const ordemRisco = {
@@ -1013,11 +1033,13 @@ function ordenarCardsPorRisco() {
   
   // Ordenar os cards por nível de risco
   cards.sort((a, b) => {
-    const riscoA = a.getAttribute('data-risco');
-    const riscoB = b.getAttribute('data-risco');
+    const riscoA = a.getAttribute('data-risco') || 'baixo';
+    const riscoB = b.getAttribute('data-risco') || 'baixo';
+    
+    console.log(`Comparando: Card A (${riscoA}) vs Card B (${riscoB})`);
     
     // Comparar pela ordem de prioridade
-    return ordemRisco[riscoA] - ordemRisco[riscoB];
+    return (ordemRisco[riscoA] || 3) - (ordemRisco[riscoB] || 3);
   });
   
   // Remover todos os cards do container
@@ -1055,12 +1077,22 @@ function inicializarCardsMunicipios() {
   
   // Para cada município, criar um card
   for (const [municipioId, municipio] of Object.entries(dadosMunicipios)) {
-    // Determinar o risco com base no status
+    // Determinar o risco com base no status ou diretamente do campo risco
     let risco = 'baixo';
-    if (municipio.status === 'Crítico' || municipio.status.toLowerCase() === 'critico') {
-      risco = 'alto';
-    } else if (municipio.status === 'Alerta' || municipio.status.toLowerCase() === 'alerta') {
-      risco = 'medio';
+    
+    // Primeiro, tentar usar o campo risco diretamente
+    if (municipio.risco) {
+      risco = municipio.risco;
+      console.log(`Usando risco diretamente do campo risco para ${municipioId}: ${risco}`);
+    } 
+    // Se não tiver o campo risco, derivar do status
+    else if (municipio.status) {
+      if (municipio.status === 'Crítico' || municipio.status.toLowerCase() === 'critico') {
+        risco = 'alto';
+      } else if (municipio.status === 'Alerta' || municipio.status.toLowerCase() === 'alerta') {
+        risco = 'medio';
+      }
+      console.log(`Derivando risco do status para ${municipioId}: ${municipio.status} -> ${risco}`);
     }
     
     // Criar o elemento div para o card
@@ -1070,7 +1102,7 @@ function inicializarCardsMunicipios() {
     
     // Criar o HTML do card
     cardContainer.innerHTML = `
-      <div class="card municipio-card h-100" data-id="${municipioId}" onclick="abrirModal('${municipioId}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Clique para detalhes">
+      <div class="card municipio-card h-100" data-id="${municipioId}" data-risco="${risco}" onclick="abrirModal('${municipioId}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Clique para detalhes">
         <div class="card-header">
           <h5 class="mb-0">${municipio.nome}</h5>
           <span class="risco-${risco}">${risco === 'alto' ? 'Risco Alto' : risco === 'medio' ? 'Risco Médio' : 'Risco Baixo'}</span>
