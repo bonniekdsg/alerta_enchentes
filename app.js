@@ -1,85 +1,122 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // Carregar dados do arquivo JSON
-  fetch('dados.json')
-    .then(resposta => resposta.json())
-    .then(dados => {
-      // Atualizar a última atualização no cabeçalho
-      document.getElementById('ultima-atualizacao').textContent = formatarData(dados.ultimaAtualizacao);
-      
-      // Calcular estatísticas para a dashboard
-      atualizarEstatisticas(dados);
-      
-      // Processar alertas e associá-los aos municípios correspondentes
-      processarAlertas(dados.alertas);
-      
-      // Atualizar ícones de alerta nos cards dos municípios
-      if (typeof atualizarIconesAlerta === 'function') {
-        atualizarIconesAlerta();
-      }
-      
-      // Para cada município, atualizar o card correspondente
-      for (const [municipioId, municipio] of Object.entries(dados.municipios)) {
-        atualizarCardMunicipio(municipioId, municipio);
-        
-        // Atualizar o objeto dadosMunicipios com os novos dados do JSON
-        if (typeof dadosMunicipios !== 'undefined' && dadosMunicipios[municipioId]) {
-          // Preservar dados históricos e alertas que não estão no JSON
-          const historicoNiveis = dadosMunicipios[municipioId].historicoNiveis;
-          const alertasAntigos = dadosMunicipios[municipioId].alertas;
-          
-          // Atualizar dados básicos
-          dadosMunicipios[municipioId].nome = municipio.nome;
-          dadosMunicipios[municipioId].rio = `Rio ${municipio.rio}`;
-          dadosMunicipios[municipioId].nivelAtual = municipio.nivelAtual;
-          dadosMunicipios[municipioId].nivelAlerta = municipio.nivelAlerta;
-          dadosMunicipios[municipioId].nivelInundacao = municipio.nivelInundacao;
-          
-          // Formatar variação para exibição
-          dadosMunicipios[municipioId].variacao24h = municipio.variacao24h > 0 ? 
-            `+${municipio.variacao24h}` : `${municipio.variacao24h}`;
-          
-          // Atualizar tendência
-          dadosMunicipios[municipioId].tendencia = municipio.tendencia;
-          
-          // Atualizar status baseado no risco
-          dadosMunicipios[municipioId].status = municipio.risco === 'alto' ? 'Crítico' : 
-                                              municipio.risco === 'medio' ? 'Alerta' : 'Normal';
-          
-          // Atualizar classe CSS do status
-          dadosMunicipios[municipioId].statusClass = municipio.risco === 'alto' ? 'bg-danger' : 
-                                                  municipio.risco === 'medio' ? 'bg-warning' : 'bg-success';
-          
-          // Atualizar tempo desde a última atualização
-          dadosMunicipios[municipioId].atualizacao = calcularTempoPassado(municipio.atualizadoEm);
-          
-          // Atualizar contatos
-          dadosMunicipios[municipioId].defesaCivil = municipio.contatoDefesaCivil;
-          dadosMunicipios[municipioId].bombeiros = municipio.contatoBombeiros;
-          
-          // Gerar histórico com base no nível atual e variação
-          const nivelAtual = municipio.nivelAtual;
-          const variacao = municipio.variacao24h;
-          const historicoGerado = [];
-          
-          // Gerar 7 pontos para as últimas 24h (dividido em 6 intervalos)
-          for (let i = 6; i >= 0; i--) {
-            // Quanto menor o i, mais próximo do nível atual
-            const nivel = nivelAtual - (variacao * i / 6);
-            historicoGerado.push(parseFloat(nivel.toFixed(2)));
-          }
-          
-          // Atualizar o histórico com os dados gerados
-          dadosMunicipios[municipioId].historicoNiveis = historicoGerado;
-          
-          console.log(`Dados do modal para ${municipioId} atualizados com sucesso.`);
-          console.log(`Histórico gerado para ${municipioId}:`, historicoGerado);
+  // Função para carregar dados com tratamento de erro melhorado
+  function carregarDados() {
+    // Primeiro, tente carregar usando o caminho relativo normal
+    fetch('dados.json')
+      .then(resposta => {
+        if (!resposta.ok) {
+          throw new Error(`Erro HTTP: ${resposta.status} - ${resposta.statusText}`);
         }
+        return resposta.json();
+      })
+      .then(dados => {
+        processarDadosCarregados(dados);
+      })
+      .catch(erro => {
+        console.error('Erro ao carregar dados (tentativa 1):', erro);
+        
+        // Se falhar, tente carregar usando o caminho completo do GitHub
+        const githubUser = 'bonniekdsg';
+        const repo = 'alerta_enchentes';
+        
+        console.log('Tentando carregar dados do GitHub raw...');
+        fetch(`https://raw.githubusercontent.com/${githubUser}/${repo}/main/dados.json`)
+          .then(resposta => {
+            if (!resposta.ok) {
+              throw new Error(`Erro HTTP: ${resposta.status} - ${resposta.statusText}`);
+            }
+            return resposta.json();
+          })
+          .then(dados => {
+            processarDadosCarregados(dados);
+          })
+          .catch(erro => {
+            console.error('Erro ao carregar dados (tentativa 2):', erro);
+            alert('Não foi possível carregar os dados. Por favor, tente novamente mais tarde.\n\nDetalhes do erro: ' + erro.message);
+          });
+      });
+  }
+  
+  // Função para processar os dados após carregamento bem-sucedido
+  function processarDadosCarregados(dados) {
+    console.log('Dados carregados com sucesso!');
+    
+    // Atualizar a última atualização no cabeçalho
+    document.getElementById('ultima-atualizacao').textContent = formatarData(dados.ultimaAtualizacao);
+    
+    // Calcular estatísticas para a dashboard
+    atualizarEstatisticas(dados);
+    
+    // Processar alertas e associá-los aos municípios correspondentes
+    processarAlertas(dados.alertas);
+    
+    // Atualizar ícones de alerta nos cards dos municípios
+    if (typeof atualizarIconesAlerta === 'function') {
+      atualizarIconesAlerta();
+    }
+    
+    // Para cada município, atualizar o card correspondente
+    for (const [municipioId, municipio] of Object.entries(dados.municipios)) {
+      atualizarCardMunicipio(municipioId, municipio);
+      
+      // Atualizar o objeto dadosMunicipios com os novos dados do JSON
+      if (typeof dadosMunicipios !== 'undefined' && dadosMunicipios[municipioId]) {
+        // Preservar dados históricos e alertas que não estão no JSON
+        const historicoNiveis = dadosMunicipios[municipioId].historicoNiveis;
+        const alertasAntigos = dadosMunicipios[municipioId].alertas;
+        
+        // Atualizar dados básicos
+        dadosMunicipios[municipioId].nome = municipio.nome;
+        dadosMunicipios[municipioId].rio = `Rio ${municipio.rio}`;
+        dadosMunicipios[municipioId].nivelAtual = municipio.nivelAtual;
+        dadosMunicipios[municipioId].nivelAlerta = municipio.nivelAlerta;
+        dadosMunicipios[municipioId].nivelInundacao = municipio.nivelInundacao;
+        
+        // Formatar variação para exibição
+        dadosMunicipios[municipioId].variacao24h = municipio.variacao24h > 0 ? 
+          `+${municipio.variacao24h}` : `${municipio.variacao24h}`;
+        
+        // Atualizar tendência
+        dadosMunicipios[municipioId].tendencia = municipio.tendencia;
+        
+        // Atualizar status baseado no risco
+        dadosMunicipios[municipioId].status = municipio.risco === 'alto' ? 'Crítico' : 
+                                            municipio.risco === 'medio' ? 'Alerta' : 'Normal';
+        
+        // Atualizar classe CSS do status
+        dadosMunicipios[municipioId].statusClass = municipio.risco === 'alto' ? 'bg-danger' : 
+                                                municipio.risco === 'medio' ? 'bg-warning' : 'bg-success';
+        
+        // Atualizar tempo desde a última atualização
+        dadosMunicipios[municipioId].atualizacao = calcularTempoPassado(municipio.atualizadoEm);
+        
+        // Atualizar contatos
+        dadosMunicipios[municipioId].defesaCivil = municipio.contatoDefesaCivil;
+        dadosMunicipios[municipioId].bombeiros = municipio.contatoBombeiros;
+        
+        // Gerar histórico com base no nível atual e variação
+        const nivelAtual = municipio.nivelAtual;
+        const variacao = municipio.variacao24h;
+        const historicoGerado = [];
+        
+        // Gerar 7 pontos para as últimas 24h (dividido em 6 intervalos)
+        for (let i = 6; i >= 0; i--) {
+          // Quanto menor o i, mais próximo do nível atual
+          const nivel = nivelAtual - (variacao * i / 6);
+          historicoGerado.push(parseFloat(nivel.toFixed(2)));
+        }
+        
+        // Atualizar o histórico com os dados gerados
+        dadosMunicipios[municipioId].historicoNiveis = historicoGerado;
+        
+        console.log(`Dados do modal para ${municipioId} atualizados com sucesso.`);
+        console.log(`Histórico gerado para ${municipioId}:`, historicoGerado);
       }
-    })
-    .catch(erro => {
-      console.error('Erro ao carregar dados:', erro);
-      alert('Não foi possível carregar os dados. Por favor, tente novamente mais tarde.');
-    });
+    }
+  }
+  
+  // Iniciar o carregamento dos dados
+  carregarDados();
 });
 
 function formatarData(dataISO) {
