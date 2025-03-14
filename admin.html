@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Administração - Monitor de Enchentes</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #0088cc;
+      --secondary-color: #5bc0de;
+      --danger-color: #dc3545;
+      --warning-color: #ffc107;
+      --success-color: #28a745;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), #006699);
+      color: white;
+      padding: 1.5rem 0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+      margin-bottom: 1.5rem;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+    }
+    
+    .btn-primary:hover {
+      background-color: #006699;
+      border-color: #006699;
+    }
+    
+    pre {
+      background-color: #f8f9fa;
+      padding: 1rem;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1><i class="fas fa-water me-2"></i> Monitor de Enchentes MPAC - Administração</h1>
+          <p class="mb-0">Painel para atualização dos dados de monitoramento</p>
+        </div>
+        <a href="index_acre.html" class="btn btn-outline-light">
+          <i class="fas fa-arrow-left me-2"></i> Voltar ao site
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="card-title mb-4">Atualizar Nível do Rio</h3>
+            <form id="formNivel">
+              <div class="mb-3">
+                <label for="municipio" class="form-label">Município</label>
+                <select id="municipio" class="form-select" required>
+                  <option value="">Selecione...</option>
+                  <option value="rio-branco">Rio Branco</option>
+                  <option value="cruzeiro-do-sul">Cruzeiro do Sul</option>
+                  <option value="tarauaca">Tarauacá</option>
+                  <option value="feijo">Feijó</option>
+                  <option value="aldeia-dos-patos">Aldeia dos Patos</option>
+                  <option value="assis-brasil">Assis Brasil</option>
+                  <option value="brasileia">Brasiléia</option>
+                  <option value="xapuri-dolores">Xapuri C. Dolores</option>
+                  <option value="xapuri">Xapuri</option>
+                  <option value="capixaba">Capixaba</option>
+                  <option value="espalha">Espalha</option>
+                  <option value="riozinho-do-rola">Riozinho do Rola</option>
+                  <option value="porto-acre">Porto Acre</option>
+                  <option value="jordao">Jordão</option>
+                  <option value="seringal-santa-helena">Seringal Santa Helena</option>
+                  <option value="mancio-lima">Mâncio Lima</option>
+                  <option value="ponte-do-liberdade">Ponte do Liberdade</option>
+                  <option value="porto-walter">Porto Walter</option>
+                  <option value="marechal-thaumaturgo">Marechal Thaumaturgo</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label for="nivelAtual" class="form-label">Nível Atual (metros)</label>
+                <input type="number" id="nivelAtual" class="form-control" step="0.01" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="variacao24h" class="form-label">Variação nas últimas 24h (metros)</label>
+                <input type="number" id="variacao24h" class="form-control" step="0.01" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="tendencia" class="form-label">Tendência</label>
+                <select id="tendencia" class="form-select" required>
+                  <option value="subindo">Subindo</option>
+                  <option value="descendo">Descendo</option>
+                  <option value="estavel">Estável</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label for="risco" class="form-label">Nível de Risco</label>
+                <select id="risco" class="form-select" required>
+                  <option value="baixo">Baixo</option>
+                  <option value="medio">Médio</option>
+                  <option value="alto">Alto</option>
+                </select>
+              </div>
+              
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-2"></i> Atualizar Dados
+              </button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="card-title mb-4">Adicionar Alerta</h3>
+            <form id="formAlerta">
+              <div class="mb-3">
+                <label for="alertaMunicipio" class="form-label">Município</label>
+                <select id="alertaMunicipio" class="form-select" required>
+                  <option value="">Selecione...</option>
+                  <option value="rio-branco">Rio Branco</option>
+                  <option value="cruzeiro-do-sul">Cruzeiro do Sul</option>
+                  <option value="tarauaca">Tarauacá</option>
+                  <option value="feijo">Feijó</option>
+                  <option value="aldeia-dos-patos">Aldeia dos Patos</option>
+                  <option value="assis-brasil">Assis Brasil</option>
+                  <option value="brasileia">Brasiléia</option>
+                  <option value="xapuri-dolores">Xapuri C. Dolores</option>
+                  <option value="xapuri">Xapuri</option>
+                  <option value="capixaba">Capixaba</option>
+                  <option value="espalha">Espalha</option>
+                  <option value="riozinho-do-rola">Riozinho do Rola</option>
+                  <option value="porto-acre">Porto Acre</option>
+                  <option value="jordao">Jordão</option>
+                  <option value="seringal-santa-helena">Seringal Santa Helena</option>
+                  <option value="mancio-lima">Mâncio Lima</option>
+                  <option value="ponte-do-liberdade">Ponte do Liberdade</option>
+                  <option value="porto-walter">Porto Walter</option>
+                  <option value="marechal-thaumaturgo">Marechal Thaumaturgo</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label for="alertaTitulo" class="form-label">Título do Alerta</label>
+                <input type="text" id="alertaTitulo" class="form-control" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="alertaNivel" class="form-label">Nível do Alerta</label>
+                <select id="alertaNivel" class="form-select" required>
+                  <option value="baixo">Informativo</option>
+                  <option value="medio">Atenção</option>
+                  <option value="alto">Crítico</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label for="alertaDescricao" class="form-label">Descrição</label>
+                <textarea id="alertaDescricao" class="form-control" rows="3" required></textarea>
+              </div>
+              
+              <div class="mb-3">
+                <label for="alertaInstrucoes" class="form-label">Instruções (uma por linha)</label>
+                <textarea id="alertaInstrucoes" class="form-control" rows="3" required></textarea>
+              </div>
+              
+              <div class="mb-3">
+                <label for="alertaAbrigos" class="form-label">Abrigos (um por linha, opcional)</label>
+                <textarea id="alertaAbrigos" class="form-control" rows="3"></textarea>
+              </div>
+              
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-bell me-2"></i> Adicionar Alerta
+              </button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="card mb-4">
+          <div class="card-body">
+            <h3 class="card-title mb-4">Adicionar Novo Município</h3>
+            <form id="formNovoMunicipio">
+              <div class="mb-3">
+                <label for="novoNome" class="form-label">Nome do Município</label>
+                <input type="text" id="novoNome" class="form-control" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="novoRio" class="form-label">Nome do Rio</label>
+                <input type="text" id="novoRio" class="form-control" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="novoNivelAtual" class="form-label">Nível Atual (metros)</label>
+                <input type="number" id="novoNivelAtual" class="form-control" step="0.01" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="novoNivelAlerta" class="form-label">Nível de Alerta (metros)</label>
+                <input type="number" id="novoNivelAlerta" class="form-control" step="0.01" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="novoNivelInundacao" class="form-label">Nível de Inundação (metros)</label>
+                <input type="number" id="novoNivelInundacao" class="form-control" step="0.01" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="novoVariacao" class="form-label">Variação nas últimas 24h (metros)</label>
+                <input type="number" id="novoVariacao" class="form-control" step="0.01" required>
+              </div>
+              
+              <div class="mb-3">
+                <label for="novoTendencia" class="form-label">Tendência</label>
+                <select id="novoTendencia" class="form-select" required>
+                  <option value="subindo">Subindo</option>
+                  <option value="descendo">Descendo</option>
+                  <option value="estavel">Estável</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label for="novoRisco" class="form-label">Nível de Risco</label>
+                <select id="novoRisco" class="form-select" required>
+                  <option value="baixo">Baixo</option>
+                  <option value="medio">Médio</option>
+                  <option value="alto">Alto</option>
+                </select>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="novoLatitude" class="form-label">Latitude</label>
+                  <input type="number" id="novoLatitude" class="form-control" step="0.0001" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label for="novoLongitude" class="form-label">Longitude</label>
+                  <input type="number" id="novoLongitude" class="form-control" step="0.0001" required>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="novoDefesaCivil" class="form-label">Contato Defesa Civil</label>
+                  <input type="text" id="novoDefesaCivil" class="form-control" required>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label for="novoBombeiros" class="form-label">Contato Bombeiros</label>
+                  <input type="text" id="novoBombeiros" class="form-control" required>
+                </div>
+              </div>
+              
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i> Adicionar Município
+              </button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="mt-4" id="resultados"></div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Carregar dados atuais ao iniciar
+    let dadosAtuais = null;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Carregar dados atuais
+      fetch('dados.json')
+        .then(resposta => resposta.json())
+        .then(dados => {
+          dadosAtuais = dados;
+          console.log('Dados carregados com sucesso:', dados);
+          
+          // Configurar eventos de mudança nos selects de município
+          document.getElementById('municipio').addEventListener('change', function() {
+            preencherFormularioNivel(this.value);
+          });
+          
+          document.getElementById('alertaMunicipio').addEventListener('change', function() {
+            preencherTituloAlerta(this.value);
+          });
+        })
+        .catch(erro => {
+          console.error('Erro ao carregar dados:', erro);
+          alert('Não foi possível carregar os dados atuais. Verifique se o arquivo dados.json existe.');
+        });
+      
+      // Configurar formulário de nível
+      document.getElementById('formNivel').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!dadosAtuais) {
+          alert('Dados não carregados. Recarregue a página e tente novamente.');
+          return;
+        }
+        
+        // Pegar valores
+        const municipioId = document.getElementById('municipio').value;
+        const nivelAtual = parseFloat(document.getElementById('nivelAtual').value);
+        const variacao24h = parseFloat(document.getElementById('variacao24h').value);
+        const tendencia = document.getElementById('tendencia').value;
+        const risco = document.getElementById('risco').value;
+        
+        // Verificar se o município existe
+        if (!dadosAtuais.municipios[municipioId]) {
+          alert(`Município ${municipioId} não encontrado nos dados atuais.`);
+          return;
+        }
+        
+        // Criar cópia dos dados atuais
+        const dadosAtualizados = JSON.parse(JSON.stringify(dadosAtuais));
+        
+        // Atualizar dados do município
+        dadosAtualizados.municipios[municipioId].nivelAtual = nivelAtual;
+        dadosAtualizados.municipios[municipioId].variacao24h = variacao24h;
+        dadosAtualizados.municipios[municipioId].tendencia = tendencia;
+        dadosAtualizados.municipios[municipioId].risco = risco;
+        dadosAtualizados.municipios[municipioId].atualizadoEm = new Date().toISOString();
+        
+        // Atualizar última atualização geral
+        dadosAtualizados.ultimaAtualizacao = new Date().toISOString();
+        
+        // Mostrar resultado
+        mostrarResultado(dadosAtualizados, 'Dados do município atualizados com sucesso!');
+      });
+      
+      // Configurar formulário de alerta
+      document.getElementById('formAlerta').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!dadosAtuais) {
+          alert('Dados não carregados. Recarregue a página e tente novamente.');
+          return;
+        }
+        
+        // Pegar valores
+        const municipioId = document.getElementById('alertaMunicipio').value;
+        const titulo = document.getElementById('alertaTitulo').value;
+        const nivel = document.getElementById('alertaNivel').value;
+        const descricao = document.getElementById('alertaDescricao').value;
+        const instrucoes = document.getElementById('alertaInstrucoes').value.split('\n').filter(i => i.trim() !== '');
+        const abrigos = document.getElementById('alertaAbrigos').value.split('\n').filter(a => a.trim() !== '');
+        
+        // Verificar se o município existe
+        if (!dadosAtuais.municipios[municipioId]) {
+          alert(`Município ${municipioId} não encontrado nos dados atuais.`);
+          return;
+        }
+        
+        // Criar cópia dos dados atuais
+        const dadosAtualizados = JSON.parse(JSON.stringify(dadosAtuais));
+        
+        // Criar novo alerta
+        const novoAlerta = {
+          id: `alerta-${Date.now()}`,
+          municipioId: municipioId,
+          titulo: titulo,
+          nivel: nivel,
+          descricao: descricao,
+          emitidoEm: new Date().toISOString(),
+          instrucoes: instrucoes,
+          abrigos: abrigos
+        };
+        
+        // Adicionar alerta
+        dadosAtualizados.alertas.push(novoAlerta);
+        
+        // Atualizar última atualização geral
+        dadosAtualizados.ultimaAtualizacao = new Date().toISOString();
+        
+        // Mostrar resultado
+        mostrarResultado(dadosAtualizados, 'Novo alerta adicionado com sucesso!');
+      });
+      
+      // Configurar formulário de novo município
+      document.getElementById('formNovoMunicipio').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (!dadosAtuais) {
+          alert('Dados não carregados. Recarregue a página e tente novamente.');
+          return;
+        }
+        
+        // Pegar valores
+        const nome = document.getElementById('novoNome').value;
+        const rio = document.getElementById('novoRio').value;
+        const nivelAtual = parseFloat(document.getElementById('novoNivelAtual').value);
+        const nivelAlerta = parseFloat(document.getElementById('novoNivelAlerta').value);
+        const nivelInundacao = parseFloat(document.getElementById('novoNivelInundacao').value);
+        const variacao24h = parseFloat(document.getElementById('novoVariacao').value);
+        const tendencia = document.getElementById('novoTendencia').value;
+        const risco = document.getElementById('novoRisco').value;
+        const latitude = parseFloat(document.getElementById('novoLatitude').value);
+        const longitude = parseFloat(document.getElementById('novoLongitude').value);
+        const contatoDefesaCivil = document.getElementById('novoDefesaCivil').value;
+        const contatoBombeiros = document.getElementById('novoBombeiros').value;
+        
+        // Criar ID do município (slug)
+        const municipioId = nome.toLowerCase()
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+          .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
+          .replace(/\s+/g, '-') // Substitui espaços por hífens
+          .replace(/-+/g, '-'); // Remove hífens duplicados
+        
+        // Verificar se o município já existe
+        if (dadosAtuais.municipios[municipioId]) {
+          alert(`Município ${nome} já existe no sistema.`);
+          return;
+        }
+        
+        // Criar cópia dos dados atuais
+        const dadosAtualizados = JSON.parse(JSON.stringify(dadosAtuais));
+        
+        // Adicionar novo município
+        dadosAtualizados.municipios[municipioId] = {
+          nome: nome,
+          rio: rio,
+          nivelAtual: nivelAtual,
+          nivelAlerta: nivelAlerta,
+          nivelInundacao: nivelInundacao,
+          variacao24h: variacao24h,
+          tendencia: tendencia,
+          risco: risco,
+          atualizadoEm: new Date().toISOString(),
+          latitude: latitude,
+          longitude: longitude,
+          contatoDefesaCivil: contatoDefesaCivil,
+          contatoBombeiros: contatoBombeiros
+        };
+        
+        // Atualizar última atualização geral
+        dadosAtualizados.ultimaAtualizacao = new Date().toISOString();
+        
+        // Mostrar resultado
+        mostrarResultado(dadosAtualizados, `Município ${nome} adicionado com sucesso!`);
+        
+        // Limpar formulário
+        document.getElementById('formNovoMunicipio').reset();
+        
+        // Mostrar mensagem adicional sobre atualização da interface
+        const resultadosDiv = document.getElementById('resultados');
+        const mensagemAdicional = document.createElement('div');
+        mensagemAdicional.className = 'alert alert-info mt-3';
+        mensagemAdicional.innerHTML = `
+          <h5><i class="fas fa-info-circle me-2"></i> Atenção</h5>
+          <p>Para que o novo município apareça nos selects de formulários, será necessário recarregar a página após atualizar o arquivo dados.json.</p>
+          <p>Para que o município apareça na página principal, será necessário adicionar um card para ele no arquivo index_acre.html.</p>
+        `;
+        resultadosDiv.appendChild(mensagemAdicional);
+        
+        // Gerar código HTML para o card do município
+        const htmlCard = gerarHTMLCardMunicipio(municipioId, nome, rio, nivelAtual, risco);
+        
+        // Gerar código HTML para o modal do município
+        const htmlModal = gerarHTMLModalMunicipio(municipioId, nome, rio);
+        
+        // Mostrar código HTML para copiar
+        const cardHtmlDiv = document.createElement('div');
+        cardHtmlDiv.className = 'card mt-3';
+        cardHtmlDiv.innerHTML = `
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Código HTML para o card do município</h5>
+            <button class="btn btn-sm btn-secondary" onclick="copiarCardHTML()">
+              <i class="fas fa-copy me-1"></i> Copiar HTML
+            </button>
+          </div>
+          <div class="card-body">
+            <p>Copie este código e adicione-o na seção de municípios monitorados no arquivo index_acre.html:</p>
+            <pre id="cardHtmlOutput">${htmlCard}</pre>
+          </div>
+        `;
+        resultadosDiv.appendChild(cardHtmlDiv);
+        
+        // Mostrar código HTML do modal para copiar
+        const modalHtmlDiv = document.createElement('div');
+        modalHtmlDiv.className = 'card mt-3';
+        modalHtmlDiv.innerHTML = `
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Código HTML para o modal do município</h5>
+            <button class="btn btn-sm btn-secondary" onclick="copiarModalHTML()">
+              <i class="fas fa-copy me-1"></i> Copiar HTML
+            </button>
+          </div>
+          <div class="card-body">
+            <p>Copie este código e adicione-o dentro da div com id "modal-content-container" no arquivo index_acre.html:</p>
+            <pre id="modalHtmlOutput">${htmlModal}</pre>
+          </div>
+        `;
+        resultadosDiv.appendChild(modalHtmlDiv);
+        
+        // Adicionar instruções para atualizar o objeto dadosMunicipios
+        const scriptDiv = document.createElement('div');
+        scriptDiv.className = 'card mt-3';
+        scriptDiv.innerHTML = `
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Código JavaScript para adicionar ao objeto dadosMunicipios</h5>
+            <button class="btn btn-sm btn-secondary" onclick="copiarScriptHTML()">
+              <i class="fas fa-copy me-1"></i> Copiar JavaScript
+            </button>
+          </div>
+          <div class="card-body">
+            <p>Copie este código e adicione-o ao objeto dadosMunicipios no arquivo index_acre.html:</p>
+            <pre id="scriptHtmlOutput">'${municipioId}': {
+  nome: '${nome.replace(/'/g, "\\'")}',
+  rio: '${rio.replace(/'/g, "\\'")}',
+  nivelAtual: ${nivelAtual},
+  nivelAlerta: ${nivelAlerta},
+  nivelInundacao: ${nivelInundacao},
+  historico: [
+    { data: '2023-05-01', nivel: ${(nivelAtual * 0.85).toFixed(2)} },
+    { data: '2023-05-02', nivel: ${(nivelAtual * 0.9).toFixed(2)} },
+    { data: '2023-05-03', nivel: ${(nivelAtual * 0.95).toFixed(2)} },
+    { data: '2023-05-04', nivel: ${nivelAtual.toFixed(2)} }
+  ]
+},</pre>
+          </div>
+        `;
+        resultadosDiv.appendChild(scriptDiv);
+      });
+    });
+    
+    // Função para gerar o HTML do card do município
+    function gerarHTMLCardMunicipio(id, nome, rio, nivel, risco) {
+      // Determinar classes e ícones com base no risco
+      let classeRisco, iconeRisco, textoRisco;
+      
+      switch(risco) {
+        case 'alto':
+          classeRisco = 'danger';
+          iconeRisco = 'exclamation-triangle';
+          textoRisco = 'Alto';
+          break;
+        case 'medio':
+          classeRisco = 'warning';
+          iconeRisco = 'exclamation-circle';
+          textoRisco = 'Médio';
+          break;
+        default:
+          classeRisco = 'success';
+          iconeRisco = 'check-circle';
+          textoRisco = 'Baixo';
+      }
+      
+      // Escapar caracteres especiais para HTML
+      const escapeHTML = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      
+      // Gerar HTML do card
+      return `<!-- Card para ${escapeHTML(nome)} -->
+<div class="col-md-6 col-lg-4 mb-4">
+  <div class="card h-100 municipio-card" data-municipio="${escapeHTML(id)}" onclick="abrirModal('${escapeHTML(id)}')">
+    <div class="card-header bg-${classeRisco} text-white">
+      <h5 class="card-title mb-0">
+        <i class="fas fa-map-marker-alt me-2"></i> ${escapeHTML(nome)}
+      </h5>
+    </div>
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Rio ${escapeHTML(rio)}</span>
+        <span class="badge bg-${classeRisco}">
+          <i class="fas fa-${iconeRisco} me-1"></i> Risco ${textoRisco}
+        </span>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h3 class="mb-0">${nivel.toFixed(2)}m</h3>
+          <small class="text-muted">Nível atual</small>
+        </div>
+        <div class="text-end">
+          <span class="d-block" id="tendencia-${escapeHTML(id)}">
+            <i class="fas fa-arrow-up text-danger"></i> Subindo
+          </span>
+          <small class="text-muted" id="variacao-${escapeHTML(id)}">+0.15m em 24h</small>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer bg-light">
+      <small class="text-muted">
+        <i class="far fa-clock me-1"></i> Atualizado em <span id="atualizacao-${escapeHTML(id)}">há 2 horas</span>
+      </small>
+    </div>
+  </div>
+</div>`;
+    }
+    
+    // Função para gerar o HTML do modal do município
+    function gerarHTMLModalMunicipio(id, nome, rio) {
+      // Escapar caracteres especiais para HTML
+      const escapeHTML = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      
+      // Gerar HTML do modal
+      return `<!-- Modal para ${escapeHTML(nome)} -->
+<div class="modal-content" id="modal-content-${escapeHTML(id)}" style="display: none;">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <i class="fas fa-map-marker-alt me-2"></i> ${escapeHTML(nome)}
+    </h5>
+    <span class="badge bg-danger ms-2" id="modal-risco-${escapeHTML(id)}">
+      <i class="fas fa-exclamation-triangle me-1"></i> Risco Alto
+    </span>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            <h6 class="mb-0">Informações do Rio</h6>
+          </div>
+          <div class="card-body">
+            <p><strong>Rio:</strong> ${escapeHTML(rio)}</p>
+            <p><strong>Nível Atual:</strong> <span id="modal-nivel-${escapeHTML(id)}">0.00m</span></p>
+            <p><strong>Tendência:</strong> <span id="modal-tendencia-${escapeHTML(id)}">
+              <i class="fas fa-arrow-up text-danger"></i> Subindo
+            </span></p>
+            <p><strong>Variação 24h:</strong> <span id="modal-variacao-${escapeHTML(id)}">+0.00m</span></p>
+            <p><strong>Nível de Alerta:</strong> <span id="modal-alerta-${escapeHTML(id)}">0.00m</span></p>
+            <p><strong>Nível de Inundação:</strong> <span id="modal-inundacao-${escapeHTML(id)}">0.00m</span></p>
+            <p><strong>Última Atualização:</strong> <span id="modal-atualizacao-${escapeHTML(id)}">00/00/0000 00:00</span></p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card mb-3">
+          <div class="card-header">
+            <h6 class="mb-0">Contatos de Emergência</h6>
+          </div>
+          <div class="card-body">
+            <p>
+              <strong><i class="fas fa-hard-hat me-2"></i> Defesa Civil:</strong><br>
+              <span id="modal-defesa-civil-${escapeHTML(id)}">0000-0000</span>
+            </p>
+            <p>
+              <strong><i class="fas fa-fire-extinguisher me-2"></i> Corpo de Bombeiros:</strong><br>
+              <span id="modal-bombeiros-${escapeHTML(id)}">0000-0000</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card mb-3">
+      <div class="card-header">
+        <h6 class="mb-0">Histórico de Níveis</h6>
+      </div>
+      <div class="card-body">
+        <canvas id="grafico-${escapeHTML(id)}" height="200"></canvas>
+      </div>
+    </div>
+    
+    <div id="alertas-${escapeHTML(id)}">
+      <!-- Alertas serão carregados dinamicamente -->
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" onclick="fecharModal()">Fechar</button>
+  </div>
+</div>`;
+    }
+    
+    // Função para copiar o HTML do card
+    function copiarCardHTML() {
+      const pre = document.getElementById('cardHtmlOutput');
+      const textArea = document.createElement('textarea');
+      textArea.value = pre.textContent;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      // Feedback visual
+      const btnCopiar = document.querySelector('.card-header .btn');
+      const textoOriginal = btnCopiar.innerHTML;
+      btnCopiar.innerHTML = '<i class="fas fa-check me-1"></i> Copiado!';
+      btnCopiar.classList.replace('btn-secondary', 'btn-success');
+      
+      setTimeout(() => {
+        btnCopiar.innerHTML = textoOriginal;
+        btnCopiar.classList.replace('btn-success', 'btn-secondary');
+      }, 2000);
+    }
+    
+    // Função para copiar o HTML do modal
+    function copiarModalHTML() {
+      const pre = document.getElementById('modalHtmlOutput');
+      const textArea = document.createElement('textarea');
+      textArea.value = pre.textContent;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      // Feedback visual
+      const btnCopiar = document.querySelector('.card-header .btn:nth-of-type(2)');
+      const textoOriginal = btnCopiar.innerHTML;
+      btnCopiar.innerHTML = '<i class="fas fa-check me-1"></i> Copiado!';
+      btnCopiar.classList.replace('btn-secondary', 'btn-success');
+      
+      setTimeout(() => {
+        btnCopiar.innerHTML = textoOriginal;
+        btnCopiar.classList.replace('btn-success', 'btn-secondary');
+      }, 2000);
+    }
+    
+    // Função para copiar o JavaScript
+    function copiarScriptHTML() {
+      const pre = document.getElementById('scriptHtmlOutput');
+      const textArea = document.createElement('textarea');
+      textArea.value = pre.textContent;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      // Feedback visual
+      const btnCopiar = document.querySelector('.card-header .btn:nth-of-type(3)');
+      const textoOriginal = btnCopiar.innerHTML;
+      btnCopiar.innerHTML = '<i class="fas fa-check me-1"></i> Copiado!';
+      btnCopiar.classList.replace('btn-secondary', 'btn-success');
+      
+      setTimeout(() => {
+        btnCopiar.innerHTML = textoOriginal;
+        btnCopiar.classList.replace('btn-success', 'btn-secondary');
+      }, 2000);
+    }
+    
+    // Função para preencher o formulário de nível com os dados do município selecionado
+    function preencherFormularioNivel(municipioId) {
+      if (!dadosAtuais || !municipioId) return;
+      
+      const municipio = dadosAtuais.municipios[municipioId];
+      if (!municipio) return;
+      
+      // Preencher campos
+      document.getElementById('nivelAtual').value = municipio.nivelAtual;
+      document.getElementById('variacao24h').value = municipio.variacao24h;
+      document.getElementById('tendencia').value = municipio.tendencia;
+      document.getElementById('risco').value = municipio.risco;
+    }
+    
+    function preencherTituloAlerta(municipioId) {
+      if (!dadosAtuais || !municipioId) return;
+      
+      const municipio = dadosAtuais.municipios[municipioId];
+      if (!municipio) return;
+      
+      // Preencher campo de título
+      let tipoAlerta = "";
+      if (municipio.risco === "alto") {
+        tipoAlerta = "ALERTA DE INUNDAÇÃO";
+      } else if (municipio.risco === "medio") {
+        tipoAlerta = "ALERTA";
+      } else {
+        tipoAlerta = "INFORMATIVO";
+      }
+      
+      document.getElementById('alertaTitulo').value = `${tipoAlerta} - ${municipio.nome}`;
+      
+      // Preencher campo de descrição
+      const nivelAtual = municipio.nivelAtual;
+      const nivelAlerta = municipio.nivelAlerta;
+      const nivelInundacao = municipio.nivelInundacao;
+      const rio = municipio.rio;
+      
+      let descricao = `O nível do Rio ${rio} em ${municipio.nome} atingiu ${nivelAtual}m`;
+      
+      if (nivelAtual >= nivelInundacao) {
+        descricao += `, ultrapassando o nível de inundação (${nivelInundacao}m).`;
+      } else if (nivelAtual >= nivelAlerta) {
+        descricao += `, acima do nível de alerta (${nivelAlerta}m) e próximo ao nível de inundação (${nivelInundacao}m).`;
+      } else if (nivelAtual >= nivelAlerta * 0.9) {
+        descricao += `, aproximando-se do nível de alerta (${nivelAlerta}m).`;
+      } else {
+        descricao += `. O nível está abaixo do nível de alerta (${nivelAlerta}m).`;
+      }
+      
+      document.getElementById('alertaDescricao').value = descricao;
+      
+      // Selecionar nível de alerta apropriado
+      document.getElementById('alertaNivel').value = municipio.risco;
+      
+      // Preencher instruções padrão com base no nível de risco
+      let instrucoes = [];
+      
+      if (municipio.risco === "alto") {
+        instrucoes = [
+          "Moradores de áreas de risco devem ficar atentos para possível evacuação",
+          "Mantenha documentos e objetos de valor em locais seguros",
+          "Siga as orientações da Defesa Civil",
+          "Evite áreas próximas às margens do rio"
+        ];
+      } else if (municipio.risco === "medio") {
+        instrucoes = [
+          "Fique atento às atualizações da Defesa Civil",
+          "Evite áreas próximas às margens do rio",
+          "Prepare-se para possível evacuação caso o nível continue a subir"
+        ];
+      } else {
+        instrucoes = [
+          "Acompanhe as atualizações sobre o nível do rio",
+          "Mantenha-se informado pelos canais oficiais"
+        ];
+      }
+      
+      document.getElementById('alertaInstrucoes').value = instrucoes.join('\n');
+    }
+    
+    function mostrarResultado(dados, mensagem) {
+      const jsonFormatado = JSON.stringify(dados, null, 2);
+      
+      document.getElementById('resultados').innerHTML = `
+        <div class="alert alert-success">
+          <h4><i class="fas fa-check-circle me-2"></i> ${mensagem}</h4>
+          <p>Para atualizar o site, você precisa:</p>
+          <ol>
+            <li>Copiar o JSON abaixo</li>
+            <li>Substituir o conteúdo do arquivo <code>dados.json</code></li>
+            <li>Fazer upload do arquivo atualizado para o servidor</li>
+          </ol>
+        </div>
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Dados JSON atualizados</h5>
+            <button class="btn btn-sm btn-secondary" onclick="copiarJSON()">
+              <i class="fas fa-copy me-1"></i> Copiar JSON
+            </button>
+          </div>
+          <div class="card-body">
+            <pre id="jsonOutput">${jsonFormatado}</pre>
+          </div>
+        </div>
+      `;
+    }
+    
+    function copiarJSON() {
+      const pre = document.getElementById('jsonOutput');
+      const textArea = document.createElement('textarea');
+      textArea.value = pre.textContent;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      // Feedback visual
+      const btnCopiar = document.querySelector('.card-header .btn');
+      const textoOriginal = btnCopiar.innerHTML;
+      btnCopiar.innerHTML = '<i class="fas fa-check me-1"></i> Copiado!';
+      btnCopiar.classList.replace('btn-secondary', 'btn-success');
+      
+      setTimeout(() => {
+        btnCopiar.innerHTML = textoOriginal;
+        btnCopiar.classList.replace('btn-success', 'btn-secondary');
+      }, 2000);
+    }
+  </script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
