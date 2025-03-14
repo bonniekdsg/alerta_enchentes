@@ -63,7 +63,7 @@
           <h1><i class="fas fa-water me-2"></i> Monitor de Enchentes MPAC - Administração</h1>
           <p class="mb-0">Painel para atualização dos dados de monitoramento</p>
         </div>
-        <a href="index_acre.html" class="btn btn-outline-light">
+        <a href="index.html" class="btn btn-outline-light">
           <i class="fas fa-arrow-left me-2"></i> Voltar ao site
         </a>
       </div>
@@ -477,7 +477,7 @@
         mensagemAdicional.innerHTML = `
           <h5><i class="fas fa-info-circle me-2"></i> Atenção</h5>
           <p>Para que o novo município apareça nos selects de formulários, será necessário recarregar a página após atualizar o arquivo dados.json.</p>
-          <p>Para que o município apareça na página principal, será necessário adicionar um card para ele no arquivo index_acre.html.</p>
+          <p>Para que o município apareça na página principal, será necessário adicionar um card para ele no arquivo index.html.</p>
         `;
         resultadosDiv.appendChild(mensagemAdicional);
         
@@ -498,7 +498,7 @@
             </button>
           </div>
           <div class="card-body">
-            <p>Copie este código e adicione-o na seção de municípios monitorados no arquivo index_acre.html:</p>
+            <p>Copie este código e adicione-o na seção de municípios monitorados no arquivo index.html:</p>
             <pre id="cardHtmlOutput">${htmlCard}</pre>
           </div>
         `;
@@ -515,7 +515,7 @@
             </button>
           </div>
           <div class="card-body">
-            <p>Copie este código e adicione-o dentro da div com id "modal-content-container" no arquivo index_acre.html:</p>
+            <p>Copie este código e adicione-o dentro da div com id "modal-content-container" no arquivo index.html:</p>
             <pre id="modalHtmlOutput">${htmlModal}</pre>
           </div>
         `;
@@ -532,7 +532,7 @@
             </button>
           </div>
           <div class="card-body">
-            <p>Copie este código e adicione-o ao objeto dadosMunicipios no arquivo index_acre.html:</p>
+            <p>Copie este código e adicione-o ao objeto dadosMunicipios no arquivo index.html:</p>
             <pre id="scriptHtmlOutput">'${municipioId}': {
   nome: '${nome.replace(/'/g, "\\'")}',
   rio: '${rio.replace(/'/g, "\\'")}',
