@@ -501,18 +501,6 @@
             });
         });
 
-        // Atualizar data e hora
-        function atualizarDataHora() {
-            const agora = new Date();
-            const dataFormatada = agora.toLocaleDateString('pt-BR');
-            const horaFormatada = agora.toLocaleTimeString('pt-BR');
-            document.getElementById('ultima-atualizacao').textContent = `${dataFormatada}, ${horaFormatada}`;
-        }
-        
-        // Atualizar a cada segundo
-        setInterval(atualizarDataHora, 1000);
-        atualizarDataHora();
-
         // Alternar tema escuro
         document.getElementById('toggle-dark-mode').addEventListener('click', function() {
             document.body.classList.toggle('dark-mode');
