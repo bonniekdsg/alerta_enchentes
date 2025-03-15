@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atuação - Sistema de Monitoramento de Enchentes - Acre</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #0088cc;
+            --secondary-color: #5bc0de;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --success-color: #28a745;
+            --dark-color: #343a40;
+            --light-color: #f8f9fa;
+            --gray-color: #6c757d;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #006699);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .navbar {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .navbar .nav-link {
+            color: var(--dark-color);
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .navbar .nav-link:hover, 
+        .navbar .nav-link.active {
+            color: var(--primary-color);
+        }
+        
+        .navbar .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 1rem;
+            right: 1rem;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 2px 2px 0 0;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 10px;
+            color: white;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), #006699);
+        }
+        
+        .stats-card .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .stats-card .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .stats-card .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+        }
+        
+        .stats-card:hover .stat-icon {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--primary-color), #006699);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Cabeçalho -->
+    <header class="header" role="banner">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <img src="https://static.wixstatic.com/media/c96204_fecf1c65eaf64f22b97b4d31736b208c~mv2.png" alt="Radar de Enchentes MPAC" class="img-fluid" style="max-height: 120px;">
+                </div>
+                <div class="text-end d-none d-md-block">
+                    <p class="mb-0"><i class="fas fa-sync-alt me-1" aria-hidden="true"></i>Atualizado: <span id="ultima-atualizacao">14/03/2025, 09:30:00</span></p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Menu de navegação -->
+    <nav class="navbar navbar-expand-lg sticky-top" aria-label="Menu principal">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="Atuacao.html">Atuação</a>
+                    </li>
+                </ul>
+                <div class="ms-auto d-flex align-items-center">
+                    <a href="https://www.instagram.com/mpacre/" target="_blank" class="btn btn-sm btn-outline-light me-2" title="Instagram do MPAC">
+                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    </a>
+                    <a href="https://www.mpac.mp.br/" target="_blank" class="btn btn-sm btn-outline-light me-2" title="Site do MPAC">
+                        <i class="fas fa-globe" aria-hidden="true"></i>
+                    </a>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-cog" aria-hidden="true"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#ajuda-modal">Ajuda</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="toggle-dark-mode">Alternar tema</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <main class="container my-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="mb-4">Atuação do MPAC</h2>
+                <p>O Ministério Público do Estado do Acre (MPAC) atua de forma preventiva e repressiva na proteção do meio ambiente e na defesa dos direitos da sociedade, especialmente em situações de emergência como enchentes e desastres naturais.</p>
+                
+                <!-- Estatísticas de Atuação -->
+                <div class="row mb-4 mt-4">
+                    <h4 class="mb-3">Estatísticas de Atuação</h4>
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100">
+                            <div class="stats-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div class="stat-value">309</div>
+                                <div class="stat-label">Desabrigados Rio Branco</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100">
+                            <div class="stats-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <div class="stat-value">16</div>
+                                <div class="stat-label">Abrigos visitados</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100">
+                            <div class="stats-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clipboard-check"></i>
+                                </div>
+                                <div class="stat-value">56</div>
+                                <div class="stat-label">Vistorias realizadas</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100">
+                            <div class="stats-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-value">475</div>
+                                <div class="stat-label">Demandas atendidas</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100">
+                            <div class="stats-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-value">50</div>
+                                <div class="stat-label">Parcialmente atendidas</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100">
+                            <div class="stats-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <div class="stat-value">179</div>
+                                <div class="stat-label">Em atendimento</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <div class="card h-100">
+                            <div class="stats-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-value">21</div>
+                                <div class="stat-label">Reuniões</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="mt-4">Principais Ações</h4>
+                <ul>
+                    <li>Monitoramento e fiscalização das ações governamentais relacionadas à prevenção e resposta a desastres naturais</li>
+                    <li>Promoção de ações civis públicas para garantir a proteção ambiental e a segurança da população</li>
+                    <li>Articulação com órgãos públicos e sociedade civil para fortalecer a gestão de riscos</li>
+                    <li>Investigação de possíveis irregularidades na gestão de recursos destinados à prevenção e resposta a desastres</li>
+                </ul>
+                
+                <div class="alert alert-info mb-4">
+                    <h5><i class="fas fa-info-circle me-2"></i> Como denunciar</h5>
+                    <p>Se você tiver conhecimento de irregularidades relacionadas à gestão de recursos ou ações governamentais em situações de desastres naturais, entre em contato com o MPAC:</p>
+                    <p><i class="fas fa-phone me-2"></i> (68) 3213-1616</p>
+                    <p><i class="fas fa-envelope me-2"></i> ouvidoria@mpac.mp.br</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <a href="#" class="text-decoration-none" aria-label="Defesa Civil">
+                            <img src="https://via.placeholder.com/80x40?text=Defesa+Civil" alt="Logo Defesa Civil" width="80" height="40" class="bg-white rounded p-1">
+                        </a>
+                        <a href="#" class="text-decoration-none" aria-label="Prefeitura de Rio Branco">
+                            <img src="https://via.placeholder.com/80x40?text=INMET" alt="Logo Prefeitura" width="80" height="40" class="bg-white rounded p-1">
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-top border-secondary pt-4 mt-4">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <p class="text-white fw-normal mb-0" style="font-weight: 400 !important; font-size: 0.85rem !important;">&copy; 2025 Desenvolvido por Seringal Lab - Laboratório de Inovação - Todos os direitos reservados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detalhesModalLabel">Detalhes da Estatística</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-3 text-muted" id="modalCategoria"></h6>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="stat-icon me-3" id="modalIcon"></i>
+                                        <h2 class="mb-0" id="modalValor"></h2>
+                                    </div>
+                                    <p class="card-text" id="modalDescricao"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-3">Informações Adicionais</h6>
+                                    <div id="modalInfoAdicional"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dados dos cards
+        const cardsData = {
+            'desabrigados': {
+                titulo: 'Desabrigados em Rio Branco',
+                valor: 309,
+                icone: 'fas fa-home',
+                descricao: 'Número total de pessoas desabrigadas devido às enchentes em Rio Branco.',
+                infoAdicional: `
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> Principais áreas afetadas:
+                            <ul>
+                                <li>Bairro 6 de Agosto</li>
+                                <li>Bairro Base</li>
+                                <li>Baixada da Sobral</li>
+                            </ul>
+                        </li>
+                        <li class="mb-2"><i class="fas fa-bed me-2"></i> Capacidade total dos abrigos: 500 pessoas</li>
+                        <li class="mb-2"><i class="fas fa-users me-2"></i> Famílias atendidas: 87</li>
+                    </ul>`
+            },
+            'abrigos': {
+                titulo: 'Abrigos Visitados',
+                valor: 16,
+                icone: 'fas fa-building',
+                descricao: 'Total de abrigos temporários visitados e monitorados pelo MPAC.',
+                infoAdicional: `
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check-circle me-2"></i> Condições verificadas:
+                            <ul>
+                                <li>Estrutura física</li>
+                                <li>Condições sanitárias</li>
+                                <li>Alimentação</li>
+                                <li>Assistência médica</li>
+                            </ul>
+                        </li>
+                        <li class="mb-2"><i class="fas fa-calendar me-2"></i> Frequência de visitas: Semanal</li>
+                    </ul>`
+            },
+            'vistorias': {
+                titulo: 'Vistorias Realizadas',
+                valor: 56,
+                icone: 'fas fa-clipboard-check',
+                descricao: 'Número de vistorias técnicas realizadas em áreas de risco.',
+                infoAdicional: `
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-chart-pie me-2"></i> Tipos de vistoria:
+                            <ul>
+                                <li>Estrutural: 25</li>
+                                <li>Ambiental: 18</li>
+                                <li>Sanitária: 13</li>
+                            </ul>
+                        </li>
+                        <li class="mb-2"><i class="fas fa-file-alt me-2"></i> Relatórios emitidos: 56</li>
+                    </ul>`
+            },
+            'demandas': {
+                titulo: 'Demandas Atendidas',
+                valor: 475,
+                icone: 'fas fa-check-circle',
+                descricao: 'Total de solicitações e demandas atendidas pelo MPAC.',
+                infoAdicional: `
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-tags me-2"></i> Categorias:
+                            <ul>
+                                <li>Assistência social: 180</li>
+                                <li>Infraestrutura: 145</li>
+                                <li>Saúde: 95</li>
+                                <li>Outros: 55</li>
+                            </ul>
+                        </li>
+                        <li class="mb-2"><i class="fas fa-clock me-2"></i> Tempo médio de atendimento: 48h</li>
+                    </ul>`
+            },
+            'parciais': {
+                titulo: 'Demandas Parcialmente Atendidas',
+                valor: 50,
+                icone: 'fas fa-clock',
+                descricao: 'Demandas em processo de atendimento ou parcialmente resolvidas.',
+                infoAdicional: `
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-hourglass-half me-2"></i> Status:
+                            <ul>
+                                <li>Em análise: 20</li>
+                                <li>Em execução: 25</li>
+                                <li>Aguardando recursos: 5</li>
+                            </ul>
+                        </li>
+                        <li class="mb-2"><i class="fas fa-calendar-alt me-2"></i> Previsão de conclusão: 15 dias</li>
+                    </ul>`
+            },
+            'atendimento': {
+                titulo: 'Em Atendimento',
+                valor: 179,
+                icone: 'fas fa-tasks',
+                descricao: 'Processos e demandas atualmente em atendimento.',
+                infoAdicional: `
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-list-alt me-2"></i> Distribuição:
+                            <ul>
+                                <li>Fase inicial: 85</li>
+                                <li>Em andamento: 65</li>
+                                <li>Fase final: 29</li>
+                            </ul>
+                        </li>
+                        <li class="mb-2"><i class="fas fa-user-clock me-2"></i> Tempo médio de processo: 30 dias</li>
+                    </ul>`
+            },
+            'reunioes': {
+                titulo: 'Reuniões Realizadas',
+                valor: 21,
+                icone: 'fas fa-users',
+                descricao: 'Encontros e reuniões de coordenação e planejamento.',
+                infoAdicional: `
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-handshake me-2"></i> Participantes:
+                            <ul>
+                                <li>Defesa Civil</li>
+                                <li>Corpo de Bombeiros</li>
+                                <li>Secretarias Municipais</li>
+                                <li>Representantes Comunitários</li>
+                            </ul>
+                        </li>
+                        <li class="mb-2"><i class="fas fa-file-signature me-2"></i> Acordos firmados: 15</li>
+                    </ul>`
+            }
+        };
+
+        // Adicionar evento de clique aos cards
+        document.querySelectorAll('.stats-card').forEach((card, index) => {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', () => {
+                const cardId = Object.keys(cardsData)[index];
+                const data = cardsData[cardId];
+                
+                // Atualizar conteúdo do modal
+                document.getElementById('detalhesModalLabel').textContent = data.titulo;
+                document.getElementById('modalCategoria').textContent = data.titulo;
+                document.getElementById('modalValor').textContent = data.valor;
+                document.getElementById('modalIcon').className = data.icone + ' fa-3x text-primary';
+                document.getElementById('modalDescricao').textContent = data.descricao;
+                document.getElementById('modalInfoAdicional').innerHTML = data.infoAdicional;
+                
+                // Abrir modal
+                const modal = new bootstrap.Modal(document.getElementById('detalhesModal'));
+                modal.show();
+            });
+        });
+
+        // Atualizar data e hora
+        function atualizarDataHora() {
+            const agora = new Date();
+            const dataFormatada = agora.toLocaleDateString('pt-BR');
+            const horaFormatada = agora.toLocaleTimeString('pt-BR');
+            document.getElementById('ultima-atualizacao').textContent = `${dataFormatada}, ${horaFormatada}`;
+        }
+        
+        // Atualizar a cada segundo
+        setInterval(atualizarDataHora, 1000);
+        atualizarDataHora();
+
+        // Alternar tema escuro
+        document.getElementById('toggle-dark-mode').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+        });
+    </script>
+</body>
+</html> 
