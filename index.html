@@ -157,7 +157,7 @@
             overflow: hidden;
             margin: 8px 0;
         }
-        
+
         .nivel-atual {
             position: absolute;
             height: 100%;
@@ -380,7 +380,7 @@
             height: 300px;
             margin-bottom: 1.5rem;
         }
-        
+
         .form-control, .form-select {
             padding: 0.75rem 1rem;
             border-radius: 8px;
@@ -567,7 +567,7 @@
         }
         
         .skip-link:focus {
-            top: 0;
+                top: 0;
         }
         
         /* Dark mode */
@@ -744,14 +744,14 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <img src="https://static.wixstatic.com/media/c96204_fecf1c65eaf64f22b97b4d31736b208c~mv2.png" alt="Radar de Enchentes MPAC" class="img-fluid" style="max-height: 120px;">
-                </div>
+            </div>
                 <div class="text-end d-none d-md-block">
                     <p class="mb-0"><i class="fas fa-sync-alt me-1" aria-hidden="true"></i>Atualizado:<span id="ultima-atualizacao">13/03/2025 10:30</span></p>
                 </div>
             </div>
         </div>
     </header>
-
+    
     <!-- Menu de navegação -->
     <nav class="navbar navbar-expand-lg sticky-top" aria-label="Menu principal">
         <div class="container">
@@ -764,13 +764,7 @@
                         <a class="nav-link active" href="#dashboard" data-bs-toggle="tab" role="tab" aria-selected="true">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#mapa" data-bs-toggle="tab" role="tab" aria-selected="false">Mapa</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#alertas" data-bs-toggle="tab" role="tab" aria-selected="false">Alertas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#sobre" data-bs-toggle="tab" role="tab" aria-selected="false">Sobre</a>
+                        <a class="nav-link" href="Atuacao.html">Atuação</a>
                     </li>
                 </ul>
                 <div class="ms-auto d-flex align-items-center">
@@ -789,8 +783,8 @@
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#" id="toggle-dark-mode">Alternar tema</a></li>
                         </ul>
-                    </div>
-                </div>
+            </div>
+        </div>
             </div>
         </div>
     </nav>
@@ -807,32 +801,32 @@
                             <div class="stats-card primary">
                                 <div class="stat-icon" aria-hidden="true">
                                     <i class="fas fa-map-marker-alt"></i>
-                                </div>
+                    </div>
                                 <div class="stat-value">22</div>
                                 <div class="stat-label">Municípios monitorados</div>
-                            </div>
-                        </div>
+                </div>
                     </div>
+                </div>
                     <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                         <div class="card h-100">
                             <div class="stats-card warning">
                                 <div class="stat-icon" aria-hidden="true">
                                     <i class="fas fa-exclamation-triangle"></i>
-                                </div>
+                    </div>
                                 <div class="stat-value">4</div>
                                 <div class="stat-label">Municípios em alerta</div>
-                            </div>
-                        </div>
+                </div>
                     </div>
+                </div>
                     <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                         <div class="card h-100">
                             <div class="stats-card danger">
                                 <div class="stat-icon" aria-hidden="true">
                                     <i class="fas fa-exclamation-circle"></i>
-                                </div>
+            </div>
                                 <div class="stat-value">2</div>
                                 <div class="stat-label">Municípios em risco alto</div>
-                            </div>
+        </div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
@@ -853,19 +847,19 @@
                     <div class="d-flex">
                         <div class="me-3">
                             <i class="fas fa-exclamation-triangle fa-2x" aria-hidden="true"></i>
-                        </div>
+                            </div>
                         <div>
                             <h4 class="alert-heading">Alerta de chuvas intensas</h4>
                             <p>Previsão de chuvas intensas nos próximos dias. Fique atento aos alertas da Defesa Civil e prepare-se para possíveis variações nos níveis dos rios.</p>
-                        </div>
+                            </div>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-                </div>
+                            </div>
                 
                 <!-- Contenedor de alertas dinâmicos -->
                 <div id="alertas-container">
                     <!-- Os alertas serão carregados dinamicamente do JSON -->
-                </div>
+                            </div>
 
                 <!-- Lista de municípios -->
                 <h2 class="mb-3">Municípios Monitorados <small class="text-muted fs-6">Clique no card para mais detalhes</small></h2>
@@ -878,7 +872,7 @@
                                 <div class="search-container">
                                     <i class="fas fa-search" aria-hidden="true"></i>
                                     <input type="text" id="municipio-busca" class="form-control" placeholder="Buscar município..." aria-label="Buscar município">
-                                </div>
+                    </div>
                             </div>
                             <div class="col-md-6">                
                                 <div class="d-flex flex-wrap gap-2 mb-3">
@@ -890,11 +884,11 @@
                                         <i class="fas fa-bell me-1" aria-hidden="true"></i> Com Alertas
                                         <span class="alerta-contador badge rounded-pill bg-danger ms-1">0</span>
                                     </button>
-                                </div>
                             </div>
-                        </div>
                     </div>
                 </div>
+            </div>
+        </div>
                 
                 <div class="row g-3" id="lista-municipios">
                     <!-- Os cards dos municípios serão carregados aqui -->
@@ -904,89 +898,94 @@
                 <div id="mensagem-sem-resultados" style="display: none;"></div>
             </div>
             
-            <!-- Tab Mapa -->
-            <div class="tab-pane fade" id="mapa" role="tabpanel">
+            <!-- Tab Atuação -->
+            <div class="tab-pane fade" id="atuacao" role="tabpanel">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h2 class="mb-3">Mapa de Monitoramento</h2>
-                        <div class="ratio ratio-16x9 mb-3">
-                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3014020.4250655462!2d-73.1536224!3d-8.9774368!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x917f8daa4e9f36c9%3A0xc7a5ac2d016d3749!2sAcre!5e0!3m2!1spt-BR!2sbr!4v1646876793875!5m2!1spt-BR!2sbr" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
-                        </div>
-                        <p class="text-muted">O mapa mostra a localização dos municípios monitorados e o status atual dos rios. Clique nos marcadores para mais detalhes.</p>
+                        <h2 class="mb-4">Atuação do MPAC</h2>
+                        <p>O Ministério Público do Estado do Acre (MPAC) atua de forma preventiva e repressiva na proteção do meio ambiente e na defesa dos direitos da sociedade, especialmente em situações de emergência como enchentes e desastres naturais.</p>
                         
-                        <div class="d-flex gap-3 align-items-center mb-3">
-                            <div>Legenda:</div>
-                            <div class="d-flex align-items-center">
-                                <span class="nivel-badge nivel-badge-baixo"></span>
-                                <span>Normal</span>
+                        <!-- Estatísticas de Atuação -->
+                        <div class="row mb-4 mt-4">
+                            <h4 class="mb-3">Estatísticas de Atuação</h4>
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card h-100" style="background-color: #8B2635; color: white; border-radius: 10px;">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title mb-2">Desabrigados Rio Branco</h6>
+                                        <h2 class="display-4 fw-bold mb-0">309</h2>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center">
-                                <span class="nivel-badge nivel-badge-medio"></span>
-                                <span>Alerta</span>
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card h-100" style="background-color: #8B2635; color: white; border-radius: 10px;">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title mb-2">Abrigos visitados</h6>
+                                        <h2 class="display-4 fw-bold mb-0">16</h2>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="d-flex align-items-center">
-                                <span class="nivel-badge nivel-badge-alto"></span>
-                                <span>Crítico</span>
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card h-100" style="background-color: #8B2635; color: white; border-radius: 10px;">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title mb-2">Vistorias realizadas</h6>
+                                        <h2 class="display-4 fw-bold mb-0">56</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card h-100" style="background-color: #8B2635; color: white; border-radius: 10px;">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title mb-2">Demandas atendidas</h6>
+                                        <h2 class="display-4 fw-bold mb-0">475</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card h-100" style="background-color: #8B2635; color: white; border-radius: 10px;">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title mb-2">Parcialmente atendidas</h6>
+                                        <h2 class="display-4 fw-bold mb-0">50</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card h-100" style="background-color: #8B2635; color: white; border-radius: 10px;">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title mb-2">Em atendimento</h6>
+                                        <h2 class="display-4 fw-bold mb-0">179</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card h-100" style="background-color: #8B2635; color: white; border-radius: 10px;">
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title mb-2">Reuniões</h6>
+                                        <h2 class="display-4 fw-bold mb-0">21</h2>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tab Alertas -->
-            <div class="tab-pane fade" id="alertas" role="tabpanel">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h2 class="mb-4">Alertas Ativos</h2>
                         
-                        <div id="alertas-container">
-                            <!-- Aqui o conteúdo será inserido via JavaScript -->
-                            <div class="alert alert-info">
-                                <h5><i class="fas fa-info-circle me-2"></i> Informação</h5>
-                                <p>Para visualizar os alertas detalhados de um município específico, clique no card do município na aba "Municípios".</p>
-                                <p>Os alertas agora são exibidos diretamente nos detalhes de cada município para facilitar o acompanhamento.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Tab Sobre -->
-            <div class="tab-pane fade" id="sobre" role="tabpanel">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h2 class="mb-4">Sobre o Sistema</h2>
-                        <p>O Sistema de Monitoramento de Enchentes do Acre é uma ferramenta para acompanhar em tempo real os níveis dos rios e alertas de enchentes nos municípios do estado.</p>
-                        
-                        <h4 class="mt-4">Funcionalidades</h4>
+                        <h4 class="mt-4">Principais Ações</h4>
                         <ul>
-                            <li>Monitoramento em tempo real dos níveis dos rios</li>
-                            <li>Alertas de enchentes por município</li>
-                            <li>Histórico de variação dos níveis</li>
-                            <li>Informações de contato da Defesa Civil e Corpo de Bombeiros</li>
-                            <li>Filtros por nível de risco e alertas ativos</li>
+                            <li>Monitoramento e fiscalização das ações governamentais relacionadas à prevenção e resposta a desastres naturais</li>
+                            <li>Promoção de ações civis públicas para garantir a proteção ambiental e a segurança da população</li>
+                            <li>Articulação com órgãos públicos e sociedade civil para fortalecer a gestão de riscos</li>
+                            <li>Investigação de possíveis irregularidades na gestão de recursos destinados à prevenção e resposta a desastres</li>
                         </ul>
                         
                         <div class="alert alert-info mb-4">
-                            <h5><i class="fas fa-info-circle me-2"></i> Como usar o filtro 'Com Alertas'</h5>
-                            <p>O filtro "Com Alertas" permite visualizar apenas os municípios que possuem alertas ativos.</p>
-                            <ol>
-                                <li>Clique no botão "Com Alertas" para ver apenas os municípios com alertas ativos.</li>
-                                <li>Para voltar a ver todos os municípios, clique no botão "Todos".</li>
-                                <li>Se nenhum município estiver visível após aplicar o filtro, significa que não há alertas ativos no momento.</li>
-                            </ol>
+                            <h5><i class="fas fa-info-circle me-2"></i> Como denunciar</h5>
+                            <p>Se você tiver conhecimento de irregularidades relacionadas à gestão de recursos ou ações governamentais em situações de desastres naturais, entre em contato com o MPAC:</p>
+                            <p><i class="fas fa-phone me-2"></i> (68) 3213-1616</p>
+                            <p><i class="fas fa-envelope me-2"></i> ouvidoria@mpac.mp.br</p>
                         </div>
-                        
-                        <h4 class="mt-4">Contato</h4>
-                        <p>Para mais informações, entre em contato com a Defesa Civil do Estado do Acre:</p>
-                        <p><i class="fas fa-phone me-2"></i> (68) 3223-1177</p>
-                        <p><i class="fas fa-envelope me-2"></i> defesacivil@acre.gov.br</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    
+
     <!-- Rodapé -->
     <footer>
         <div class="container">
@@ -994,14 +993,12 @@
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h5 class="text-white mb-3">Sistema de Monitoramento de Enchentes</h5>
                     <p class="text-white fw-normal" style="max-width: 300px; font-weight: 400 !important; font-size: 0.90rem !important;">Sistema de monitoramento e alerta para enchentes no estado do Acre.</p>
-                </div>
+                    </div>
                 <div class="col-lg-2 col-md-4 col-6 mb-4 mb-md-0">
                     <h5 class="text-white mb-3">Links</h5>
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="#dashboard" class="footer-link" data-bs-toggle="tab"><i class="fas fa-chart-line me-2" aria-hidden="true"></i> Dashboard</a></li>
-                        <li class="mb-2"><a href="#mapa" class="footer-link" data-bs-toggle="tab"><i class="fas fa-map-marked-alt me-2" aria-hidden="true"></i> Mapa</a></li>
-                        <li class="mb-2"><a href="#alertas" class="footer-link" data-bs-toggle="tab"><i class="fas fa-exclamation-triangle me-2" aria-hidden="true"></i> Alertas</a></li>
-                        <li class="mb-2"><a href="#sobre" class="footer-link" data-bs-toggle="tab"><i class="fas fa-info-circle me-2" aria-hidden="true"></i> Sobre</a></li>
+                        <li class="mb-2"><a href="#atuacao" class="footer-link" data-bs-toggle="tab"><i class="fas fa-balance-scale me-2" aria-hidden="true"></i> Atuação</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-4 col-6 mb-4 mb-md-0">
@@ -1027,12 +1024,12 @@
                         </a>
                     </div>
                 </div>
-            </div>
+                </div>
             <div class="border-top border-secondary pt-4 mt-4">
                 <div class="row">
                     <div class="col-12 text-center">
                         <p class="text-white fw-normal mb-0" style="font-weight: 400 !important; font-size: 0.85rem !important;">&copy; 2025 Desenvolvido por Seringal Lab - Laboratório de Inovação - Todos os direitos reservados.</p>
-                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -1552,6 +1549,56 @@
                 }
             }
         }
-    </script> 
+    </script>
+    
+    <!-- Script para corrigir a navegação entre abas -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Corrigir navegação entre abas
+            const navLinks = document.querySelectorAll('.nav-link[data-bs-toggle="tab"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetTab = this.getAttribute('href');
+                    
+                    // Remover classe active de todas as abas
+                    document.querySelectorAll('.nav-link').forEach(tab => {
+                        tab.classList.remove('active');
+                        tab.setAttribute('aria-selected', 'false');
+                    });
+                    
+                    // Adicionar classe active à aba clicada
+                    this.classList.add('active');
+                    this.setAttribute('aria-selected', 'true');
+                    
+                    // Esconder todos os painéis de conteúdo
+                    document.querySelectorAll('.tab-pane').forEach(pane => {
+                        pane.classList.remove('show', 'active');
+                    });
+                    
+                    // Mostrar o painel de conteúdo correspondente
+                    const targetPane = document.querySelector(targetTab);
+                    if (targetPane) {
+                        targetPane.classList.add('show', 'active');
+                    }
+                });
+            });
+            
+            // Também corrigir links no rodapé
+            const footerLinks = document.querySelectorAll('.footer-link[data-bs-toggle="tab"]');
+            footerLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetTab = this.getAttribute('href');
+                    
+                    // Encontrar o link correspondente na navegação principal e clicar nele
+                    const navLink = document.querySelector(`.nav-link[href="${targetTab}"]`);
+                    if (navLink) {
+                        navLink.click();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
-</html> 
+</html>
