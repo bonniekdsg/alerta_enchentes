@@ -848,11 +848,11 @@
                     <div class="d-flex">
                         <div class="me-3">
                             <i class="fas fa-exclamation-triangle fa-2x" aria-hidden="true"></i>
-                            </div>
+                        </div>
                         <div>
                             <h4 class="alert-heading">Alerta de chuvas intensas</h4>
                             <p>Previsão de chuvas intensas nos próximos dias. Fique atento aos alertas da Defesa Civil e prepare-se para possíveis variações nos níveis dos rios.</p>
-                            </div>
+                        </div>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
                             </div>
@@ -1120,123 +1120,255 @@
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="app.js"></script>
     <script>
-        // Variáveis globais
+        // Variáveis globais para armazenar dados
         let dadosMunicipios = {};
         let dadosAlertas = [];
         let ultimaAtualizacao = '';
         
-        // Função para carregar dados da API SheetDB
-        async function carregarDados() {
-          try {
-            // Buscar dados da aba "Níveis dos Rios"
-            const respostaNiveis = await fetch('https://sheetdb.io/api/v1/jhx7c3n5n0lkg');
-            if (!respostaNiveis.ok) {
-              throw new Error('Falha ao carregar dados dos níveis dos rios');
-            }
-            const dadosNiveis = await respostaNiveis.json();
-            
-            // Buscar dados da aba "Alertas"
-            // Nota: Se a API já retorna ambas as abas, essa chamada adicional pode não ser necessária
-            // const respostaAlertas = await fetch('https://sheetdb.io/api/v1/jhx7c3n5n0lkg/sheet=Alertas');
-            // const dadosAlertas = await respostaAlertas.json();
-            
-            // Processar os dados dos níveis dos rios
-            processarDados(dadosNiveis);
-            
-            // Atualizar a interface
-            atualizarInterface();
-            
-            console.log('Dados carregados com sucesso via SheetDB API');
-          } catch (erro) {
-            console.error('Erro ao carregar dados:', erro);
-            alert('Não foi possível carregar os dados. Tente novamente mais tarde.');
-          }
+        // Função para gerar ID do município (slug) baseado no nome
+        function gerarMunicipioId(nome) {
+          if (!nome) return '';
+          
+          return nome.toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+            .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
+            .replace(/\s+/g, '-') // Substitui espaços por hífens
+            .replace(/-+/g, '-') // Remove hífens duplicados
+            .replace(/^-+|-+$/g, ''); // Remove hífens do início e fim
         }
         
-        // Função para processar os dados recebidos da API
+        // Função para processar dados dos municípios
         function processarDados(dados) {
+          if (!dados || !Array.isArray(dados) || dados.length === 0) {
+            console.warn('Dados recebidos inválidos ou vazios:', dados);
+            return;
+          }
+
           // Limpar dados anteriores
           dadosMunicipios = {};
-          dadosAlertas = [];
           
-          // Processar dados dos municípios
-          dados.forEach(item => {
-            // Criar ID do município (slug) baseado no nome
-            const municipioId = item.Nome.toLowerCase()
-              .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
-              .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
-              .replace(/\s+/g, '-') // Substitui espaços por hífens
-              .replace(/-+/g, '-'); // Remove hífens duplicados
+          // Processar cada município
+          dados.forEach((municipio, index) => {
+            // Verificar se dados estão completos
+            if (!municipio.Municipio) {
+              console.warn(`Município na posição ${index} não possui nome definido:`, municipio);
+              return;
+            }
             
-            // Adicionar município ao objeto de dados
+            // Gerar ID único para o município
+            const municipioId = gerarMunicipioId(municipio.Municipio);
+            
+            // Processar dados do município
             dadosMunicipios[municipioId] = {
-              nome: item.Nome,
-              rio: item.Rio,
-              nivelAtual: parseFloat(item['Nível Atual'].replace(',', '.')),
-              nivelAlerta: parseFloat(item['Nível Alerta'].replace(',', '.')),
-              nivelInundacao: parseFloat(item['Nível Inundação'].replace(',', '.')),
-              variacao24h: parseFloat(item['Variação 24h'].replace(',', '.')),
-              tendencia: item['Tendência\t'].toLowerCase(),
-              risco: item.Risco.toLowerCase(),
-              atualizadoEm: item['Atualizado Em'],
-              latitude: parseFloat(item['Latitude\t']),
-              longitude: parseFloat(item.Longitude),
-              contatoDefesaCivil: item['Defesa Civil'],
-              contatoBombeiros: item.Bombeiros
+              id: municipioId,
+              nome: municipio.Municipio,
+              nivelAtual: parseFloat(municipio['Nível Atual'] || 0),
+              nivelAlerta: parseFloat(municipio['Nível de Alerta'] || 0),
+              nivelInundacao: parseFloat(municipio['Nível de Inundação'] || 0),
+              tendencia: (municipio.Tendência || 'estável').toLowerCase(),
+              variacao24h: parseFloat(municipio['Variação 24h'] || 0),
+              atualizadoEm: municipio['Atualizado em'] || new Date().toISOString(),
+              contatoDefesaCivil: municipio['Contato Defesa Civil'] || '199',
+              contatoBombeiros: municipio['Contato Bombeiros'] || '193',
+              risco: calcularRisco(
+                parseFloat(municipio['Nível Atual'] || 0), 
+                parseFloat(municipio['Nível de Alerta'] || 0), 
+                parseFloat(municipio['Nível de Inundação'] || 0)
+              )
             };
+            
+            console.log(`Município processado: ${municipio.Municipio} (${municipioId})`);
           });
           
-          // Atualizar a última atualização com base no município mais recentemente atualizado
-          if (dados.length > 0) {
-            ultimaAtualizacao = dados[0]['Atualizado Em'] || '';
-            // Atualizar o elemento na página
-            const dataFormatada = formatarData(ultimaAtualizacao);
-            document.getElementById('ultima-atualizacao').textContent = dataFormatada;
-          }
+          return dadosMunicipios;
         }
         
-        // Função para formatar data do formato ISO para um formato mais amigável
-        function formatarData(dataISO) {
-          try {
-            const data = new Date(dataISO);
-            return data.toLocaleString('pt-BR');
-          } catch (e) {
-            return dataISO; // Retorna o original se não conseguir formatar
-          }
+        // Função para calcular nível de risco
+        function calcularRisco(nivelAtual, nivelAlerta, nivelInundacao) {
+          if (nivelAtual >= nivelInundacao) return 'alto';
+          if (nivelAtual >= nivelAlerta) return 'medio';
+          return 'baixo';
         }
         
-        // Função para calcular tempo decorrido
-        function calcularTempoDecorrido(dataString) {
+        // Função para gerar ID de município
+        function gerarMunicipioId(nome) {
+          if (!nome) return `municipio-${Date.now()}`;
+          
+          // Normalizar nome (remover acentos, espaços extras, etc)
+          return nome
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^\w\s]/g, '')
+            .replace(/\s+/g, '-');
+        }
+        
+        // Função para formatar data
+        function formatarData(dataString) {
+          if (!dataString) return 'N/A';
+          
           try {
             const data = new Date(dataString);
-            const agora = new Date();
-            const diferencaMs = agora - data;
-            
-            // Converter para minutos, horas ou dias
-            const minutos = Math.floor(diferencaMs / (1000 * 60));
-            if (minutos < 60) return `há ${minutos} minuto${minutos !== 1 ? 's' : ''}`;
-            
-            const horas = Math.floor(minutos / 60);
-            if (horas < 24) return `há ${horas} hora${horas !== 1 ? 's' : ''}`;
-            
-            const dias = Math.floor(horas / 24);
-            return `há ${dias} dia${dias !== 1 ? 's' : ''}`;
-          } catch (e) {
-            return 'data desconhecida';
+            return data.toLocaleString('pt-BR', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            });
+          } catch (erro) {
+            console.error('Erro ao formatar data:', erro);
+            return dataString;
           }
         }
         
-        // Função para atualizar a interface com os dados
+        // Função para carregar dados dos municípios
+        async function carregarDados() {
+          console.log('Carregando dados dos municípios...');
+          
+          try {
+            // Adicionar timestamp para evitar cache
+            const timestamp = new Date().getTime();
+            const url = `https://sheetdb.io/api/v1/jhx7c3n5n0lkg?_=${timestamp}`;
+            
+            // Tentar fazer fetch com CORS
+            console.log('Buscando dados da API:', url);
+            const resposta = await fetch(url, {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              mode: 'cors',
+              cache: 'no-cache'
+            });
+            
+            if (!resposta.ok) {
+              throw new Error(`Falha ao buscar dados: ${resposta.status} ${resposta.statusText}`);
+            }
+            
+            const dados = await resposta.json();
+            console.log('Dados recebidos da API:', dados);
+            
+            // Processar dados recebidos
+            processarDados(dados);
+            
+            console.log('Dados carregados com sucesso:', Object.keys(dadosMunicipios).length, 'municípios');
+            return true;
+          } catch (erro) {
+            console.error('Erro ao carregar dados dos municípios:', erro);
+            
+            // Tentar fallback com JSONP se CORS falhar
+            console.log('Tentando carregamento alternativo via JSONP...');
+            return new Promise((resolve, reject) => {
+              const script = document.createElement('script');
+              const callbackName = 'jsonpCallback_' + Math.random().toString(36).substr(2, 9);
+              
+              // Adicionar timestamp para evitar cache
+              const timestamp = new Date().getTime();
+              script.src = `https://sheetdb.io/api/v1/jhx7c3n5n0lkg?callback=${callbackName}&_=${timestamp}`;
+              
+              // Criar função de callback global
+              window[callbackName] = function(dados) {
+                console.log('Dados recebidos via JSONP:', dados);
+                processarDados(dados);
+                delete window[callbackName];
+                document.head.removeChild(script);
+                resolve(true);
+              };
+              
+              // Adicionar tratamento de erro
+              script.onerror = function() {
+                delete window[callbackName];
+                document.head.removeChild(script);
+                console.error('Falha no carregamento JSONP');
+                reject(new Error('Falha no carregamento JSONP'));
+              };
+              
+              document.head.appendChild(script);
+            });
+          }
+        }
+        
+        // Função para atualizar a interface com os dados carregados
         function atualizarInterface() {
-          // Atualizar cards dos municípios
+          console.log('Atualizando interface com os dados carregados');
+          
+          // Verificar se há dados para atualizar
+          if (!dadosMunicipios || Object.keys(dadosMunicipios).length === 0) {
+            console.warn('Não há dados para atualizar a interface');
+            return;
+          }
+          
+          // Verificar se existem cards para todos os municípios
+          const containerMunicipios = document.getElementById('lista-municipios');
+          if (!containerMunicipios) {
+            console.warn('Container de municípios não encontrado');
+            return;
+          }
+          
+          // Verificar se não há cards existentes
+          const cardsExistentes = document.querySelectorAll('[data-municipio]');
+          if (cardsExistentes.length === 0) {
+            console.log('Não foram encontrados cards existentes. Criando cards para os municípios...');
+            
+            // Limpar o container
+            containerMunicipios.innerHTML = '';
+            
+            // Criar cards para cada município
+            Object.keys(dadosMunicipios).forEach(municipioId => {
+              const municipio = dadosMunicipios[municipioId];
+              const cardHTML = criarCardMunicipio(municipioId, municipio);
+              containerMunicipios.innerHTML += cardHTML;
+            });
+            
+            // Adicionar eventos de clique aos novos cards
+            document.querySelectorAll('[data-municipio]').forEach(card => {
+              card.addEventListener('click', function() {
+                const municipioId = this.getAttribute('data-municipio');
+                abrirModal(municipioId);
+              });
+            });
+            
+            console.log('Cards criados com sucesso.');
+          }
+          
+          // Atualizar cada município
           Object.keys(dadosMunicipios).forEach(municipioId => {
             const municipio = dadosMunicipios[municipioId];
             
+            // Buscar elementos do card pelo ID do município
+            let cardElement = document.querySelector(`[data-municipio="${municipioId}"]`);
+            
+            // Se não encontrar pelo ID, tentar pelo nome
+            if (!cardElement) {
+              const allCards = document.querySelectorAll('[data-municipio]');
+              for (const card of allCards) {
+                const cardNome = card.querySelector('.card-title')?.textContent?.trim();
+                if (cardNome && cardNome.toLowerCase() === municipio.nome.toLowerCase()) {
+                  cardElement = card;
+                  break;
+                }
+              }
+            }
+            
+            if (!cardElement) {
+              console.warn(`Card não encontrado para município: ${municipio.nome} (${municipioId})`);
+              return;
+            }
+            
+            // Atualizar nível atual
+            const nivelElement = cardElement.querySelector('[data-nivel]');
+            if (nivelElement) {
+              nivelElement.textContent = `${municipio.nivelAtual.toFixed(2)}m`;
+            } else {
+              console.warn(`Elemento de nível não encontrado para município: ${municipio.nome}`);
+            }
+            
             // Atualizar tendência
-            const tendenciaEl = document.getElementById(`tendencia-${municipioId}`);
-            if (tendenciaEl) {
+            const tendenciaElement = cardElement.querySelector('[data-tendencia]');
+            if (tendenciaElement) {
               let icone, classe;
               switch(municipio.tendencia) {
                 case 'subindo':
@@ -1251,131 +1383,740 @@
                   icone = 'fa-arrows-alt-h';
                   classe = 'text-warning';
               }
-              tendenciaEl.innerHTML = `<i class="fas ${icone} ${classe}"></i> ${municipio.tendencia.charAt(0).toUpperCase() + municipio.tendencia.slice(1)}`;
+              tendenciaElement.innerHTML = `<i class="fas ${icone} ${classe}"></i> ${municipio.tendencia.charAt(0).toUpperCase() + municipio.tendencia.slice(1)}`;
+            } else {
+              console.warn(`Elemento de tendência não encontrado para município: ${municipio.nome}`);
             }
             
             // Atualizar variação
-            const variacaoEl = document.getElementById(`variacao-${municipioId}`);
-            if (variacaoEl) {
+            const variacaoElement = cardElement.querySelector('[data-variacao]');
+            if (variacaoElement) {
               const sinal = municipio.variacao24h > 0 ? '+' : '';
-              variacaoEl.textContent = `${sinal}${municipio.variacao24h.toFixed(2)}m em 24h`;
+              variacaoElement.textContent = `${sinal}${municipio.variacao24h.toFixed(2)}m`;
+            } else {
+              console.warn(`Elemento de variação não encontrado para município: ${municipio.nome}`);
             }
             
-            // Atualizar tempo decorrido desde a última atualização
-            const atualizacaoEl = document.getElementById(`atualizacao-${municipioId}`);
-            if (atualizacaoEl && municipio.atualizadoEm) {
-              atualizacaoEl.textContent = calcularTempoDecorrido(municipio.atualizadoEm);
+            // Atualizar data de atualização
+            const atualizacaoElement = cardElement.querySelector('[data-atualizacao]');
+            if (atualizacaoElement) {
+              atualizacaoElement.textContent = formatarData(municipio.atualizadoEm);
+            } else {
+              console.warn(`Elemento de atualização não encontrado para município: ${municipio.nome}`);
             }
-          });
-        }
-        
-        // Inicializar carregamento de dados ao carregar a página
-        document.addEventListener('DOMContentLoaded', function() {
-          carregarDados();
-          
-          // Atualizar a cada 5 minutos
-          setInterval(carregarDados, 5 * 60 * 1000);
-        });
-
-        // Função para abrir o modal de detalhes do município
-        function abrirModal(municipioId) {
-          // Esconder todos os conteúdos de modal
-          document.querySelectorAll('#detalhes-modal .modal-content').forEach(content => {
-            content.style.display = 'none';
-          });
-          
-          // Mostrar o conteúdo específico para este município
-          const modalContent = document.getElementById(`modal-content-${municipioId}`);
-          if (modalContent) {
-            modalContent.style.display = 'block';
             
-            // Atualizar os dados do modal
-            const municipio = dadosMunicipios[municipioId];
-            if (municipio) {
-              // Atualizar nível atual
-              const nivelEl = document.getElementById(`modal-nivel-${municipioId}`);
-              if (nivelEl) nivelEl.textContent = `${municipio.nivelAtual.toFixed(2)}m`;
-              
-              // Atualizar tendência
-              const tendenciaEl = document.getElementById(`modal-tendencia-${municipioId}`);
-              if (tendenciaEl) {
-                let icone, classe;
-                switch(municipio.tendencia) {
-                  case 'subindo':
-                    icone = 'fa-arrow-up';
-                    classe = 'text-danger';
-                    break;
-                  case 'descendo':
-                    icone = 'fa-arrow-down';
-                    classe = 'text-success';
-                    break;
-                  default:
-                    icone = 'fa-arrows-alt-h';
-                    classe = 'text-warning';
-                }
-                tendenciaEl.innerHTML = `<i class="fas ${icone} ${classe}"></i> ${municipio.tendencia.charAt(0).toUpperCase() + municipio.tendencia.slice(1)}`;
+            // Atualizar cabeçalho de risco
+            const riscoHeader = cardElement.querySelector('.card-header');
+            if (riscoHeader) {
+              let classe;
+              switch(municipio.risco) {
+                case 'alto':
+                  classe = 'bg-danger';
+                  break;
+                case 'medio':
+                  classe = 'bg-warning';
+                  break;
+                default:
+                  classe = 'bg-success';
               }
               
-              // Atualizar variação
-              const variacaoEl = document.getElementById(`modal-variacao-${municipioId}`);
-              if (variacaoEl) {
-                const sinal = municipio.variacao24h > 0 ? '+' : '';
-                variacaoEl.textContent = `${sinal}${municipio.variacao24h.toFixed(2)}m`;
-              }
-              
-              // Atualizar níveis de alerta e inundação
-              const alertaEl = document.getElementById(`modal-alerta-${municipioId}`);
-              if (alertaEl) alertaEl.textContent = `${municipio.nivelAlerta.toFixed(2)}m`;
-              
-              const inundacaoEl = document.getElementById(`modal-inundacao-${municipioId}`);
-              if (inundacaoEl) inundacaoEl.textContent = `${municipio.nivelInundacao.toFixed(2)}m`;
-              
-              // Atualizar data de atualização
-              const atualizacaoEl = document.getElementById(`modal-atualizacao-${municipioId}`);
-              if (atualizacaoEl) atualizacaoEl.textContent = formatarData(municipio.atualizadoEm);
-              
-              // Atualizar contatos
-              const defesaCivilEl = document.getElementById(`modal-defesa-civil-${municipioId}`);
-              if (defesaCivilEl) defesaCivilEl.textContent = municipio.contatoDefesaCivil;
-              
-              const bombeirosEl = document.getElementById(`modal-bombeiros-${municipioId}`);
-              if (bombeirosEl) bombeirosEl.textContent = municipio.contatoBombeiros;
-              
-              // Atualizar classe de risco
-              const riscoEl = document.getElementById(`modal-risco-${municipioId}`);
-              if (riscoEl) {
-                let classe, icone, texto;
-                switch(municipio.risco) {
-                  case 'alto':
-                    classe = 'bg-danger';
-                    icone = 'exclamation-triangle';
-                    texto = 'Alto';
-                    break;
-                  case 'medio':
-                    classe = 'bg-warning';
-                    icone = 'exclamation-circle';
-                    texto = 'Médio';
-                    break;
-                  default:
-                    classe = 'bg-success';
-                    icone = 'check-circle';
-                    texto = 'Baixo';
-                }
-                riscoEl.className = `badge ${classe} ms-2`;
-                riscoEl.innerHTML = `<i class="fas fa-${icone} me-1"></i> Risco ${texto}`;
-              }
+              // Atualizar apenas a classe de risco, mantendo outras classes
+              riscoHeader.classList.remove('bg-danger', 'bg-warning', 'bg-success');
+              riscoHeader.classList.add(classe);
             }
-          }
+            
+            // Atualizar badge de risco
+            const riscoBadge = cardElement.querySelector('.badge');
+            if (riscoBadge) {
+              let classe, icone, texto;
+              switch(municipio.risco) {
+                case 'alto':
+                  classe = 'bg-danger';
+                  icone = 'exclamation-triangle';
+                  texto = 'Alto';
+                  break;
+                case 'medio':
+                  classe = 'bg-warning';
+                  icone = 'exclamation-circle';
+                  texto = 'Médio';
+                  break;
+                default:
+                  classe = 'bg-success';
+                  icone = 'check-circle';
+                  texto = 'Baixo';
+              }
+              
+              riscoBadge.className = `badge ${classe} ms-2`;
+              riscoBadge.innerHTML = `<i class="fas fa-${icone} me-1"></i> Risco ${texto}`;
+            }
+          });
           
-          // Mostrar o modal
-          const modal = new bootstrap.Modal(document.getElementById('detalhes-modal'));
-          modal.show();
+          console.log('Interface atualizada com sucesso');
         }
         
         // Função para fechar o modal
         function fecharModal() {
-          const modal = bootstrap.Modal.getInstance(document.getElementById('detalhes-modal'));
+          const modal = bootstrap.Modal.getInstance(document.getElementById('municipioModal'));
           if (modal) modal.hide();
+        }
+        
+        // Função para abrir o modal de detalhes do município
+        function abrirModal(municipioId) {
+          // Obter dados do município
+          const municipio = dadosMunicipios[municipioId];
+          if (!municipio) {
+            console.error(`Município não encontrado: ${municipioId}`);
+            return;
+          }
+          
+          // Atualizar título do modal
+          document.getElementById('municipioModalLabel').textContent = municipio.nome;
+          
+          // Atualizar informações do rio
+          document.getElementById('modal-rio').textContent = municipio.rio || '--';
+          document.getElementById('modal-nivel').textContent = `${municipio.nivelAtual.toFixed(2)}m`;
+          
+          // Atualizar tendência
+          const tendenciaEl = document.getElementById('modal-tendencia');
+          if (tendenciaEl) {
+            let icone, classe;
+            switch(municipio.tendencia) {
+              case 'subindo':
+                icone = 'fa-arrow-up';
+                classe = 'text-danger';
+                break;
+              case 'descendo':
+                icone = 'fa-arrow-down';
+                classe = 'text-success';
+                break;
+              default:
+                icone = 'fa-arrows-alt-h';
+                classe = 'text-warning';
+            }
+            tendenciaEl.innerHTML = `<i class="fas ${icone} ${classe}"></i> ${municipio.tendencia.charAt(0).toUpperCase() + municipio.tendencia.slice(1)}`;
+          }
+          
+          // Atualizar status (risco)
+          const statusEl = document.getElementById('modal-status');
+          if (statusEl) {
+            let classe, texto;
+            switch(municipio.risco) {
+              case 'alto':
+                classe = 'text-danger';
+                texto = 'Risco Alto';
+                break;
+              case 'medio':
+                classe = 'text-warning';
+                texto = 'Risco Médio';
+                break;
+              default:
+                classe = 'text-success';
+                texto = 'Risco Baixo';
+            }
+            statusEl.innerHTML = `<span class="${classe} fw-bold">${texto}</span>`;
+          }
+          
+          // Atualizar última atualização
+          document.getElementById('modal-atualizacao').textContent = formatarData(municipio.atualizadoEm);
+          
+          // Atualizar níveis de referência
+          document.getElementById('modal-nivel-alerta').textContent = `${municipio.nivelAlerta.toFixed(2)}m`;
+          document.getElementById('modal-nivel-inundacao').textContent = `${municipio.nivelInundacao.toFixed(2)}m`;
+          
+          // Atualizar contatos
+          document.getElementById('modal-defesa-civil').textContent = municipio.contatoDefesaCivil || '199';
+          document.getElementById('modal-bombeiros').textContent = municipio.contatoBombeiros || '193';
+          
+          // Inicializar gráfico de histórico
+          inicializarGrafico(municipioId);
+          
+          // Atualizar alertas do município
+          atualizarAlertasMunicipio(municipioId);
+          
+          // Mostrar o modal
+          const modal = new bootstrap.Modal(document.getElementById('municipioModal'));
+          modal.show();
+        }
+        
+        // Função para inicializar o gráfico de histórico
+        function inicializarGrafico(municipioId) {
+          const canvasEl = document.getElementById('historicoChart');
+          if (!canvasEl) return;
+          
+          // Dados fictícios para o gráfico (poderia ser obtido da API)
+          const datas = ['14/03', '15/03', '16/03', '17/03', '18/03', '19/03', '20/03'];
+          const niveis = [14.8, 15.1, 15.3, 15.2, 15.1, 15.0, 15.17];
+          
+          // Se já existe um gráfico neste canvas, destruí-lo
+          if (canvasEl.chart) {
+            canvasEl.chart.destroy();
+          }
+          
+          // Criar novo gráfico
+          const municipio = dadosMunicipios[municipioId];
+          if (!municipio) return;
+          
+          const ctx = canvasEl.getContext('2d');
+          canvasEl.chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: datas,
+              datasets: [{
+                label: 'Nível do Rio (m)',
+                data: niveis,
+                borderColor: '#0088cc',
+                backgroundColor: 'rgba(0, 136, 204, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.1
+              }, {
+                label: 'Nível de Alerta',
+                data: Array(datas.length).fill(municipio.nivelAlerta),
+                borderColor: '#ffc107',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                fill: false,
+                pointRadius: 0
+              }, {
+                label: 'Nível de Inundação',
+                data: Array(datas.length).fill(municipio.nivelInundacao),
+                borderColor: '#dc3545',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                fill: false,
+                pointRadius: 0
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                tooltip: {
+                  mode: 'index',
+                  intersect: false
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: false,
+                  title: {
+                    display: true,
+                    text: 'Nível (metros)'
+                  }
+                }
+              }
+            }
+          });
+        }
+        
+        // Função para atualizar alertas do município
+        function atualizarAlertasMunicipio(municipioId) {
+          const alertasEl = document.getElementById('modal-alertas-container');
+          if (!alertasEl) return;
+          
+          // Limpar alertas anteriores
+          alertasEl.innerHTML = '';
+          
+          // Verificar se há alertas para este município
+          const alertasMunicipio = dadosAlertas.filter(alerta => alerta.municipioId === municipioId);
+          
+          if (alertasMunicipio.length === 0) {
+            alertasEl.innerHTML = `
+              <div class="alert alert-info mt-4">
+                <i class="fas fa-info-circle me-2"></i> Não há alertas ativos para este município.
+              </div>
+            `;
+            return;
+          }
+          
+          // Adicionar título para os alertas
+          alertasEl.innerHTML = `<h5 class="mt-4 mb-3">Alertas Ativos</h5>`;
+          
+          // Adicionar cada alerta
+          alertasMunicipio.forEach(alerta => {
+            let classeAlerta, iconeAlerta;
+            switch(alerta.nivel) {
+              case 'alto':
+                classeAlerta = 'danger';
+                iconeAlerta = 'exclamation-triangle';
+                break;
+              case 'medio':
+                classeAlerta = 'warning';
+                iconeAlerta = 'exclamation-circle';
+                break;
+              default:
+                classeAlerta = 'info';
+                iconeAlerta = 'info-circle';
+            }
+            
+            const dataEmissao = new Date(alerta.emitidoEm);
+            const dataFormatada = dataEmissao.toLocaleString('pt-BR');
+            
+            let instrucoes = '';
+            if (alerta.instrucoes && alerta.instrucoes.length > 0) {
+              instrucoes = `
+                <h6 class="mt-3 mb-2">Instruções:</h6>
+                <ul class="mb-0">
+                  ${alerta.instrucoes.map(instrucao => `<li>${instrucao}</li>`).join('')}
+                </ul>
+              `;
+            }
+            
+            let abrigos = '';
+            if (alerta.abrigos && alerta.abrigos.length > 0) {
+              abrigos = `
+                <h6 class="mt-3 mb-2">Abrigos disponíveis:</h6>
+                <ul class="mb-0">
+                  ${alerta.abrigos.map(abrigo => `<li>${abrigo}</li>`).join('')}
+                </ul>
+              `;
+            }
+            
+            const alertaHTML = `
+              <div class="alert alert-${classeAlerta} mb-3">
+                <h5 class="alert-heading">
+                  <i class="fas fa-${iconeAlerta} me-2"></i> ${alerta.titulo}
+                </h5>
+                <p>${alerta.descricao}</p>
+                ${instrucoes}
+                ${abrigos}
+                <div class="mt-3 text-end">
+                  <small>Emitido em: ${dataFormatada}</small>
+                </div>
+              </div>
+            `;
+            
+            alertasEl.innerHTML += alertaHTML;
+          });
+        }
+        
+        // Função para processar alertas da API
+        async function carregarAlertas() {
+          try {
+            // Adicionar timestamp para evitar cache
+            const timestamp = new Date().getTime();
+            const url = `https://sheetdb.io/api/v1/jhx7c3n5n0lkg/sheet=Alertas?_=${timestamp}`;
+            
+            // Buscar dados da aba "Alertas"
+            const response = await fetch(url, {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              mode: 'cors',
+              cache: 'no-cache'
+            });
+            
+            if (!response.ok) {
+              throw new Error(`Falha ao carregar alertas: ${response.status} ${response.statusText}`);
+            }
+            
+            const dados = await response.json();
+            console.log('Alertas recebidos da API:', dados);
+            
+            if (!dados || dados.length === 0) {
+              console.warn('Nenhum alerta recebido da API');
+              dadosAlertas = [];
+              atualizarContadorAlertas();
+              return;
+            }
+            
+            // Processar os alertas
+            dadosAlertas = dados.map(alerta => {
+              return {
+                id: alerta.ID || `alerta-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                municipioId: gerarMunicipioId(alerta.Municipio),
+                titulo: alerta.Titulo,
+                nivel: (alerta.Nivel || 'medio').toLowerCase(),
+                descricao: alerta.Descricao,
+                emitidoEm: alerta['Emitido Em'] || new Date().toISOString(),
+                instrucoes: alerta.Instrucoes ? alerta.Instrucoes.split('\n') : [],
+                abrigos: alerta.Abrigos ? alerta.Abrigos.split('\n') : []
+              };
+            });
+            
+            console.log('Alertas processados:', dadosAlertas);
+            
+            // Atualizar contador de alertas na interface
+            atualizarContadorAlertas();
+            
+            // Atualizar os alertas dinâmicos no container principal
+            atualizarAlertasDinamicos();
+            
+          } catch (erro) {
+            console.error('Erro ao carregar alertas:', erro);
+            try {
+              // Tentar método alternativo via JSONP se CORS falhar
+              return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                const callbackName = 'jsonpCallback_alertas_' + Math.random().toString(36).substr(2, 9);
+                
+                window[callbackName] = function(dados) {
+                  console.log('Alertas recebidos via JSONP:', dados);
+                  if (dados && dados.length > 0) {
+                    dadosAlertas = dados.map(alerta => {
+                      return {
+                        id: alerta.ID || `alerta-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                        municipioId: gerarMunicipioId(alerta.Municipio),
+                        titulo: alerta.Titulo,
+                        nivel: (alerta.Nivel || 'medio').toLowerCase(),
+                        descricao: alerta.Descricao,
+                        emitidoEm: alerta['Emitido Em'] || new Date().toISOString(),
+                        instrucoes: alerta.Instrucoes ? alerta.Instrucoes.split('\n') : [],
+                        abrigos: alerta.Abrigos ? alerta.Abrigos.split('\n') : []
+                      };
+                    });
+                    atualizarContadorAlertas();
+                    atualizarAlertasDinamicos();
+                  } else {
+                    dadosAlertas = [];
+                    atualizarContadorAlertas();
+                  }
+                  
+                  delete window[callbackName];
+                  document.head.removeChild(script);
+                  resolve(true);
+                };
+                
+                script.onerror = function() {
+                  delete window[callbackName];
+                  document.head.removeChild(script);
+                  console.error('Falha no carregamento JSONP para alertas');
+                  dadosAlertas = [];
+                  atualizarContadorAlertas();
+                  reject(new Error('Falha no carregamento JSONP para alertas'));
+                };
+                
+                const timestamp = new Date().getTime();
+                script.src = `https://sheetdb.io/api/v1/jhx7c3n5n0lkg/sheet=Alertas?callback=${callbackName}&_=${timestamp}`;
+                document.head.appendChild(script);
+              });
+            } catch (erroJsonp) {
+              console.error('Erro no fallback JSONP para alertas:', erroJsonp);
+              dadosAlertas = [];
+              atualizarContadorAlertas();
+            }
+          }
+        }
+        
+        // Função para atualizar alertas dinâmicos no container principal
+        function atualizarAlertasDinamicos() {
+          const container = document.getElementById('alertas-container');
+          if (!container) return;
+          
+          // Limpar alertas antigos
+          container.innerHTML = '';
+          
+          // Filtrar apenas alertas de risco alto
+          const alertasAlto = dadosAlertas.filter(alerta => alerta.nivel === 'alto');
+          
+          if (alertasAlto.length === 0) return;
+          
+          // Adicionar alertas de risco alto ao container
+          alertasAlto.forEach(alerta => {
+            // Obter nome do município
+            const municipioId = alerta.municipioId;
+            const municipio = dadosMunicipios[municipioId];
+            const nomeMunicipio = municipio ? municipio.nome : 'Desconhecido';
+            
+            // Formatar data
+            const dataEmissao = new Date(alerta.emitidoEm);
+            const dataFormatada = dataEmissao.toLocaleString('pt-BR');
+            
+            const alertaHTML = `
+              <div class="alert alert-danger mb-3">
+                <div class="d-flex">
+                  <div class="me-3">
+                    <i class="fas fa-exclamation-triangle fa-2x" aria-hidden="true"></i>
+                  </div>
+                  <div>
+                    <h4 class="alert-heading mb-1">${alerta.titulo}</h4>
+                    <p class="mb-1">${alerta.descricao}</p>
+                    <small class="text-muted">Emitido em: ${dataFormatada}</small>
+                  </div>
+                </div>
+                <div class="mt-2 text-end">
+                  <button class="btn btn-sm btn-outline-danger" onclick="abrirModal('${municipioId}')">
+                    <i class="fas fa-info-circle me-1"></i> Ver detalhes
+                  </button>
+                </div>
+              </div>
+            `;
+            
+            container.innerHTML += alertaHTML;
+          });
+        }
+        
+        // Inicializar carregamento de dados ao carregar a página
+        document.addEventListener('DOMContentLoaded', async function() {
+          console.log('Página carregada. Iniciando carregamento de dados...');
+          
+          // Verificar se os cards dos municípios existem
+          const cards = document.querySelectorAll('[data-municipio]');
+          console.log(`Encontrados ${cards.length} cards de municípios`);
+          
+          // Desativar cache para fetch
+          const headers = new Headers();
+          headers.append('pragma', 'no-cache');
+          headers.append('cache-control', 'no-cache');
+          
+          try {
+            // Carregar dados dos municípios
+            await carregarDados();
+            
+            // Carregar alertas
+            await carregarAlertas();
+            
+            // Atualizar a interface
+            atualizarInterface();
+            
+            // Atualizar contador de alertas
+            atualizarContadorAlertas();
+            
+            console.log('Todos os dados carregados e interface atualizada com sucesso');
+          } catch (erro) {
+            console.error('Erro ao inicializar dados:', erro);
+          }
+          
+          // Configurar eventos dos botões de filtro
+          document.querySelectorAll('.btn-filtro').forEach(botao => {
+            botao.addEventListener('click', function() {
+              // Remover classe 'active' de todos os botões
+              document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('active'));
+              
+              // Adicionar classe 'active' ao botão clicado
+              this.classList.add('active');
+              
+              // Obter filtro
+              const filtro = this.getAttribute('data-filtro');
+              
+              // Filtrar cards
+              filtrarMunicipios(filtro);
+            });
+          });
+          
+          // Configurar busca por texto
+          const buscaInput = document.getElementById('municipio-busca');
+          if (buscaInput) {
+            buscaInput.addEventListener('input', function() {
+              const texto = this.value.toLowerCase().trim();
+              filtrarMunicipiosPorTexto(texto);
+            });
+          }
+          
+          // Atualizar a cada 5 minutos
+          setInterval(async () => {
+            try {
+              await carregarDados();
+              await carregarAlertas();
+              atualizarInterface();
+              atualizarContadorAlertas();
+              console.log('Dados atualizados automaticamente');
+            } catch (erro) {
+              console.error('Erro ao atualizar dados:', erro);
+            }
+          }, 5 * 60 * 1000);
+        });
+        
+        // Função para filtrar municípios por risco ou alertas
+        function filtrarMunicipios(filtro) {
+          const cards = document.querySelectorAll('.municipio-card');
+          const semResultados = document.getElementById('mensagem-sem-resultados');
+          
+          let contadorVisivel = 0;
+          
+          cards.forEach(card => {
+            const municipioId = card.getAttribute('data-municipio');
+            const municipio = dadosMunicipios[municipioId];
+            
+            if (!municipio) {
+              card.closest('.col-md-6').style.display = 'none';
+              return;
+            }
+            
+            let visivel = false;
+            
+            switch(filtro) {
+              case 'alto':
+                visivel = municipio.risco === 'alto';
+                break;
+              case 'medio':
+                visivel = municipio.risco === 'medio';
+                break;
+              case 'baixo':
+                visivel = municipio.risco === 'baixo';
+                break;
+              case 'com-alertas':
+                visivel = dadosAlertas.some(alerta => alerta.municipioId === municipioId);
+                break;
+              default: // 'todos'
+                visivel = true;
+            }
+            
+            card.closest('.col-md-6').style.display = visivel ? 'block' : 'none';
+            
+            if (visivel) contadorVisivel++;
+          });
+          
+          // Mostrar mensagem quando não houver resultados
+          if (semResultados) {
+            if (contadorVisivel === 0) {
+              semResultados.style.display = 'block';
+              semResultados.innerHTML = `
+                <div class="alert alert-info text-center my-4">
+                  <i class="fas fa-info-circle fa-2x mb-3"></i>
+                  <h5>Nenhum município encontrado</h5>
+                  <p class="mb-0">Não há municípios que correspondam ao filtro selecionado.</p>
+                </div>
+              `;
+            } else {
+              semResultados.style.display = 'none';
+            }
+          }
+        }
+        
+        // Função para filtrar municípios por texto
+        function filtrarMunicipiosPorTexto(texto) {
+          const cards = document.querySelectorAll('.municipio-card');
+          const semResultados = document.getElementById('mensagem-sem-resultados');
+          
+          let contadorVisivel = 0;
+          
+          cards.forEach(card => {
+            const municipioId = card.getAttribute('data-municipio');
+            const municipio = dadosMunicipios[municipioId];
+            
+            if (!municipio) {
+              card.closest('.col-md-6').style.display = 'none';
+              return;
+            }
+            
+            const nomeMunicipio = municipio.nome.toLowerCase();
+            const nomeRio = (municipio.rio || '').toLowerCase();
+            
+            const visivel = texto === '' || 
+                          nomeMunicipio.includes(texto) || 
+                          nomeRio.includes(texto);
+            
+            card.closest('.col-md-6').style.display = visivel ? 'block' : 'none';
+            
+            if (visivel) contadorVisivel++;
+          });
+          
+          // Mostrar mensagem quando não houver resultados
+          if (semResultados) {
+            if (contadorVisivel === 0) {
+              semResultados.style.display = 'block';
+              semResultados.innerHTML = `
+                <div class="alert alert-info text-center my-4">
+                  <i class="fas fa-search fa-2x mb-3"></i>
+                  <h5>Nenhum município encontrado</h5>
+                  <p class="mb-0">Não foram encontrados municípios que correspondam à sua busca.</p>
+                </div>
+              `;
+            } else {
+              semResultados.style.display = 'none';
+            }
+          }
+        }
+        
+        // Função para criar HTML de um card de município
+        function criarCardMunicipio(municipioId, municipio) {
+          // Determinar classe de risco
+          let classeRisco, iconeRisco, textoRisco;
+          switch(municipio.risco) {
+            case 'alto':
+              classeRisco = 'danger';
+              iconeRisco = 'exclamation-triangle';
+              textoRisco = 'Alto';
+              break;
+            case 'medio':
+              classeRisco = 'warning';
+              iconeRisco = 'exclamation-circle';
+              textoRisco = 'Médio';
+              break;
+            default:
+              classeRisco = 'success';
+              iconeRisco = 'check-circle';
+              textoRisco = 'Baixo';
+          }
+          
+          // Determinar classe e ícone de tendência
+          let iconeTendencia, classeTendencia;
+          switch(municipio.tendencia) {
+            case 'subindo':
+              iconeTendencia = 'fa-arrow-up';
+              classeTendencia = 'text-danger';
+              break;
+            case 'descendo':
+              iconeTendencia = 'fa-arrow-down';
+              classeTendencia = 'text-success';
+              break;
+            default:
+              iconeTendencia = 'fa-arrows-alt-h';
+              classeTendencia = 'text-warning';
+          }
+          
+          // Formatar variação
+          const sinal = municipio.variacao24h > 0 ? '+' : '';
+          
+          // Criar HTML do card
+          return `
+            <div class="col-md-6 col-lg-4 mb-4">
+              <div class="card h-100 municipio-card" data-municipio="${municipioId}" onclick="abrirModal('${municipioId}')">
+                <div class="card-header bg-${classeRisco} text-white">
+                  <h5 class="card-title mb-0">
+                    <i class="fas fa-map-marker-alt me-2"></i> ${municipio.nome}
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Rio ${municipio.rio || "não informado"}</span>
+                    <span class="badge bg-${classeRisco}">
+                      <i class="fas fa-${iconeRisco} me-1"></i> Risco ${textoRisco}
+                    </span>
+                  </div>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h3 class="mb-0" data-nivel>${municipio.nivelAtual.toFixed(2)}m</h3>
+                      <small class="text-muted">Nível atual</small>
+                    </div>
+                    <div class="text-end">
+                      <span class="d-block" data-tendencia id="tendencia-${municipioId}">
+                        <i class="fas ${iconeTendencia} ${classeTendencia}"></i> ${municipio.tendencia.charAt(0).toUpperCase() + municipio.tendencia.slice(1)}
+                      </span>
+                      <small class="text-muted" data-variacao id="variacao-${municipioId}">
+                        ${sinal}${municipio.variacao24h.toFixed(2)}m em 24h
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer bg-light">
+                  <small class="text-muted">
+                    <i class="far fa-clock me-1"></i> Atualizado: <span data-atualizacao id="atualizacao-${municipioId}">${formatarData(municipio.atualizadoEm)}</span>
+                  </small>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        
+        // Função para calcular a porcentagem do nível do rio
+        function calcularPorcentagemNivel(municipio) {
+          // Calcular porcentagem com base no nível de inundação
+          return Math.min(100, (municipio.nivelAtual / municipio.nivelInundacao) * 100);
+        }
+        
+        // Função para atualizar contador de alertas
+        function atualizarContadorAlertas() {
+          const contador = document.querySelector('.alerta-contador');
+          if (contador) {
+            contador.textContent = dadosAlertas.length.toString();
+            contador.style.display = dadosAlertas.length > 0 ? 'inline' : 'none';
+          }
         }
     </script>
     
