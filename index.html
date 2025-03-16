@@ -1140,48 +1140,93 @@
         
         // Função para processar dados dos municípios
         function processarDados(dados) {
-          if (!dados || !Array.isArray(dados) || dados.length === 0) {
-            console.warn('Dados recebidos inválidos ou vazios:', dados);
+          console.log("Processando dados:", dados);
+          
+          // Se dados é um array (formato da SheetDB API), converter para objeto
+          let municipios = {};
+          
+          if (Array.isArray(dados)) {
+            console.log("Dados recebidos como array, convertendo para objeto");
+            
+            dados.forEach((municipio, index) => {
+              // Gerar ID a partir do nome
+              const nome = municipio.Nome || municipio.nome;
+              if (!nome) {
+                console.warn("Município sem nome encontrado:", municipio);
+                return;
+              }
+              
+              const id = gerarMunicipioId(nome);
+              console.log(`Processando município #${index}: ${nome} (ID: ${id})`);
+              
+              // Mapear nomes de colunas da API para as propriedades esperadas pelo código
+              municipios[id] = {
+                nome: nome,
+                rio: municipio.Rio || municipio.rio || "Não informado",
+                nivelAtual: parseFloat(municipio["Nível Atual"] || municipio.nivelAtual || 0),
+                nivelAlerta: parseFloat(municipio["Nível Alerta"] || municipio.nivelAlerta || 0),
+                nivelInundacao: parseFloat(municipio["Nível Inundação"] || municipio.nivelInundacao || 0),
+                variacao24h: parseFloat(municipio["Variação 24h"] || municipio.variacao24h || 0),
+                tendencia: (municipio.Tendência || municipio.tendencia || "estável").toLowerCase(),
+                risco: (municipio.Risco || municipio.risco || "baixo").toLowerCase(),
+                atualizadoEm: municipio["Atualizado Em"] || municipio.atualizadoEm || new Date().toISOString(),
+                abrigos: municipio.Abrigos || municipio.abrigos || 0,
+                contato: municipio.Contato || municipio.contato || "Defesa Civil",
+                instrucoes: municipio.Instrucoes || municipio.instrucoes || "Siga as orientações da Defesa Civil local."
+              };
+              
+              // Realizar verificações de qualidade de dados
+              if (isNaN(municipios[id].nivelAtual)) {
+                console.warn(`Nível atual inválido para ${nome}: ${municipio["Nível Atual"]}`);
+                municipios[id].nivelAtual = 0;
+              }
+              
+              if (isNaN(municipios[id].variacao24h)) {
+                console.warn(`Variação 24h inválida para ${nome}: ${municipio["Variação 24h"]}`);
+                municipios[id].variacao24h = 0;
+              }
+              
+              // Log de confirmação
+              console.log(`Município processado: ${nome}`, municipios[id]);
+            });
+          } else if (dados.municipios) {
+            console.log("Dados recebidos no formato esperado (objeto)");
+            municipios = dados.municipios;
+          } else {
+            console.warn("Formato de dados não reconhecido:", dados);
             return;
           }
-
-          // Limpar dados anteriores
-          dadosMunicipios = {};
           
-          // Processar cada município
-          dados.forEach((municipio, index) => {
-            // Verificar se dados estão completos
-            if (!municipio.Municipio) {
-              console.warn(`Município na posição ${index} não possui nome definido:`, municipio);
-              return;
-            }
-            
-            // Gerar ID único para o município
-            const municipioId = gerarMunicipioId(municipio.Municipio);
-            
-            // Processar dados do município
-            dadosMunicipios[municipioId] = {
-              id: municipioId,
-              nome: municipio.Municipio,
-              nivelAtual: parseFloat(municipio['Nível Atual'] || 0),
-              nivelAlerta: parseFloat(municipio['Nível de Alerta'] || 0),
-              nivelInundacao: parseFloat(municipio['Nível de Inundação'] || 0),
-              tendencia: (municipio.Tendência || 'estável').toLowerCase(),
-              variacao24h: parseFloat(municipio['Variação 24h'] || 0),
-              atualizadoEm: municipio['Atualizado em'] || new Date().toISOString(),
-              contatoDefesaCivil: municipio['Contato Defesa Civil'] || '199',
-              contatoBombeiros: municipio['Contato Bombeiros'] || '193',
-              risco: calcularRisco(
-                parseFloat(municipio['Nível Atual'] || 0), 
-                parseFloat(municipio['Nível de Alerta'] || 0), 
-                parseFloat(municipio['Nível de Inundação'] || 0)
-              )
-            };
-            
-            console.log(`Município processado: ${municipio.Municipio} (${municipioId})`);
-          });
+          // Verificar se temos municípios após processamento
+          const totalMunicipios = Object.keys(municipios).length;
+          console.log(`Total de municípios processados: ${totalMunicipios}`);
           
-          return dadosMunicipios;
+          if (totalMunicipios === 0) {
+            console.error("Nenhum município encontrado após processamento de dados");
+            document.getElementById("lista-municipios").innerHTML = 
+              '<div class="col-12 text-center py-5">' +
+              '<div class="alert alert-warning">' +
+              '<i class="fas fa-exclamation-triangle me-2"></i> ' +
+              'Nenhum município encontrado. Verifique a conexão com a API ou tente novamente mais tarde.' +
+              '</div></div>';
+            return;
+          }
+          
+          // Atualizar interface com os municípios processados
+          atualizarInterface(municipios);
+          
+          // Armazenar dados para uso em outras funções
+          window.dadosMunicipios = municipios;
+          
+          // Mostrar estatísticas no console
+          console.log("Estatísticas de risco:");
+          const riscos = Object.values(municipios).reduce((acc, mun) => {
+            acc[mun.risco] = (acc[mun.risco] || 0) + 1;
+            return acc;
+          }, {});
+          console.table(riscos);
+          
+          return municipios;
         }
         
         // Função para calcular nível de risco
@@ -1238,7 +1283,9 @@
               method: 'GET',
               headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
               },
               mode: 'cors',
               cache: 'no-cache'
@@ -1251,207 +1298,158 @@
             const dados = await resposta.json();
             console.log('Dados recebidos da API:', dados);
             
-            // Processar dados recebidos
-            processarDados(dados);
+            // Processar dados e atualizar interface
+            const municipios = processarDados(dados);
             
-            console.log('Dados carregados com sucesso:', Object.keys(dadosMunicipios).length, 'municípios');
+            // Verificar se os dados foram processados corretamente
+            if (!municipios || Object.keys(municipios).length === 0) {
+              console.error('Falha ao processar dados dos municípios');
+              
+              // Tentar carregar dados locais como fallback
+              console.log('Tentando carregar dados locais como fallback...');
+              try {
+                const respostaLocal = await fetch('dados.json');
+                if (respostaLocal.ok) {
+                  const dadosLocais = await respostaLocal.json();
+                  console.log('Dados locais carregados com sucesso:', dadosLocais);
+                  processarDados(dadosLocais);
+                }
+              } catch (erroLocal) {
+                console.error('Falha ao carregar dados locais:', erroLocal);
+              }
+            }
+            
+            // Carregar alertas
+            carregarAlertas();
+            
             return true;
           } catch (erro) {
-            console.error('Erro ao carregar dados dos municípios:', erro);
+            console.error('Erro ao carregar dados:', erro);
             
-            // Tentar fallback com JSONP se CORS falhar
-            console.log('Tentando carregamento alternativo via JSONP...');
-            return new Promise((resolve, reject) => {
+            // Tentar método alternativo (JSONP)
+            console.log('Tentando método alternativo (JSONP)...');
+            try {
               const script = document.createElement('script');
-              const callbackName = 'jsonpCallback_' + Math.random().toString(36).substr(2, 9);
+              script.src = `https://sheetdb.io/api/v1/jhx7c3n5n0lkg?callback=processarDadosCallback&_=${new Date().getTime()}`;
+              document.body.appendChild(script);
               
-              // Adicionar timestamp para evitar cache
-              const timestamp = new Date().getTime();
-              script.src = `https://sheetdb.io/api/v1/jhx7c3n5n0lkg?callback=${callbackName}&_=${timestamp}`;
-              
-              // Criar função de callback global
-              window[callbackName] = function(dados) {
+              // Definir callback global
+              window.processarDadosCallback = function(dados) {
                 console.log('Dados recebidos via JSONP:', dados);
                 processarDados(dados);
-                delete window[callbackName];
-                document.head.removeChild(script);
-                resolve(true);
+                document.body.removeChild(script);
+                delete window.processarDadosCallback;
               };
               
-              // Adicionar tratamento de erro
-              script.onerror = function() {
-                delete window[callbackName];
-                document.head.removeChild(script);
-                console.error('Falha no carregamento JSONP');
-                reject(new Error('Falha no carregamento JSONP'));
-              };
+              return true;
+            } catch (erroJSONP) {
+              console.error('Erro ao usar método JSONP:', erroJSONP);
               
-              document.head.appendChild(script);
-            });
+              // Último recurso: tentar dados locais
+              console.log('Tentando carregar dados locais...');
+              try {
+                const respostaLocal = await fetch('dados.json');
+                if (respostaLocal.ok) {
+                  const dadosLocais = await respostaLocal.json();
+                  console.log('Dados locais carregados com sucesso:', dadosLocais);
+                  processarDados(dadosLocais);
+                  return true;
+                }
+              } catch (erroLocal) {
+                console.error('Falha ao carregar dados locais:', erroLocal);
+              }
+            }
+            
+            // Se chegou aqui, todas as tentativas falharam
+            document.getElementById('lista-municipios').innerHTML = `
+              <div class="col-12 text-center py-5">
+                <div class="alert alert-danger">
+                  <i class="fas fa-exclamation-circle me-2"></i>
+                  Falha ao carregar dados. Por favor, tente novamente mais tarde.
+                </div>
+              </div>
+            `;
+            
+            return false;
           }
         }
         
         // Função para atualizar a interface com os dados carregados
-        function atualizarInterface() {
-          console.log('Atualizando interface com os dados carregados');
+        function atualizarInterface(municipios) {
+          console.log('Atualizando interface com municípios:', municipios);
           
-          // Verificar se há dados para atualizar
-          if (!dadosMunicipios || Object.keys(dadosMunicipios).length === 0) {
-            console.warn('Não há dados para atualizar a interface');
+          // Se não recebeu municípios como parâmetro, usar a variável global
+          if (!municipios && window.dadosMunicipios) {
+            municipios = window.dadosMunicipios;
+          }
+          
+          // Verificar se temos o elemento lista-municipios
+          const listaMunicipios = document.getElementById('lista-municipios');
+          if (!listaMunicipios) {
+            console.error('Elemento #lista-municipios não encontrado!');
             return;
           }
           
-          // Verificar se existem cards para todos os municípios
-          const containerMunicipios = document.getElementById('lista-municipios');
-          if (!containerMunicipios) {
-            console.warn('Container de municípios não encontrado');
+          // Limpar conteúdo atual
+          listaMunicipios.innerHTML = '';
+          
+          // Verificar se temos municípios
+          if (!municipios || Object.keys(municipios).length === 0) {
+            console.warn('Nenhum município para exibir');
+            listaMunicipios.innerHTML = `
+              <div class="col-12 text-center py-5">
+                <div class="alert alert-warning">
+                  <i class="fas fa-exclamation-triangle me-2"></i>
+                  Nenhum município com dados disponíveis.
+                </div>
+              </div>
+            `;
             return;
           }
           
-          // Verificar se não há cards existentes
-          const cardsExistentes = document.querySelectorAll('[data-municipio]');
-          if (cardsExistentes.length === 0) {
-            console.log('Não foram encontrados cards existentes. Criando cards para os municípios...');
-            
-            // Limpar o container
-            containerMunicipios.innerHTML = '';
-            
-            // Criar cards para cada município
-            Object.keys(dadosMunicipios).forEach(municipioId => {
-              const municipio = dadosMunicipios[municipioId];
-              const cardHTML = criarCardMunicipio(municipioId, municipio);
-              containerMunicipios.innerHTML += cardHTML;
-            });
-            
-            // Adicionar eventos de clique aos novos cards
-            document.querySelectorAll('[data-municipio]').forEach(card => {
-              card.addEventListener('click', function() {
-                const municipioId = this.getAttribute('data-municipio');
-                abrirModal(municipioId);
-              });
-            });
-            
-            console.log('Cards criados com sucesso.');
-          }
+          // Contadores para estatísticas
+          let totalMunicipios = 0;
+          let riscoAlto = 0;
+          let riscoMedio = 0;
+          let riscoBaixo = 0;
           
-          // Atualizar cada município
-          Object.keys(dadosMunicipios).forEach(municipioId => {
-            const municipio = dadosMunicipios[municipioId];
+          // Processar cada município e criar card
+          Object.keys(municipios).forEach(municipioId => {
+            const municipio = municipios[municipioId];
             
-            // Buscar elementos do card pelo ID do município
-            let cardElement = document.querySelector(`[data-municipio="${municipioId}"]`);
-            
-            // Se não encontrar pelo ID, tentar pelo nome
-            if (!cardElement) {
-              const allCards = document.querySelectorAll('[data-municipio]');
-              for (const card of allCards) {
-                const cardNome = card.querySelector('.card-title')?.textContent?.trim();
-                if (cardNome && cardNome.toLowerCase() === municipio.nome.toLowerCase()) {
-                  cardElement = card;
-                  break;
-                }
-              }
-            }
-            
-            if (!cardElement) {
-              console.warn(`Card não encontrado para município: ${municipio.nome} (${municipioId})`);
+            // Validar dados essenciais
+            if (!municipio || !municipio.nome) {
+              console.warn(`Município ${municipioId} com dados inválidos:`, municipio);
               return;
             }
             
-            // Atualizar nível atual
-            const nivelElement = cardElement.querySelector('[data-nivel]');
-            if (nivelElement) {
-              nivelElement.textContent = `${municipio.nivelAtual.toFixed(2)}m`;
-            } else {
-              console.warn(`Elemento de nível não encontrado para município: ${municipio.nome}`);
-            }
+            // Criar card e adicionar à lista
+            const cardHTML = criarCardMunicipio(municipioId, municipio);
+            listaMunicipios.innerHTML += cardHTML;
             
-            // Atualizar tendência
-            const tendenciaElement = cardElement.querySelector('[data-tendencia]');
-            if (tendenciaElement) {
-              let icone, classe;
-              switch(municipio.tendencia) {
-                case 'subindo':
-                  icone = 'fa-arrow-up';
-                  classe = 'text-danger';
-                  break;
-                case 'descendo':
-                  icone = 'fa-arrow-down';
-                  classe = 'text-success';
-                  break;
-                default:
-                  icone = 'fa-arrows-alt-h';
-                  classe = 'text-warning';
-              }
-              tendenciaElement.innerHTML = `<i class="fas ${icone} ${classe}"></i> ${municipio.tendencia.charAt(0).toUpperCase() + municipio.tendencia.slice(1)}`;
-            } else {
-              console.warn(`Elemento de tendência não encontrado para município: ${municipio.nome}`);
-            }
-            
-            // Atualizar variação
-            const variacaoElement = cardElement.querySelector('[data-variacao]');
-            if (variacaoElement) {
-              const sinal = municipio.variacao24h > 0 ? '+' : '';
-              variacaoElement.textContent = `${sinal}${municipio.variacao24h.toFixed(2)}m`;
-            } else {
-              console.warn(`Elemento de variação não encontrado para município: ${municipio.nome}`);
-            }
-            
-            // Atualizar data de atualização
-            const atualizacaoElement = cardElement.querySelector('[data-atualizacao]');
-            if (atualizacaoElement) {
-              atualizacaoElement.textContent = formatarData(municipio.atualizadoEm);
-            } else {
-              console.warn(`Elemento de atualização não encontrado para município: ${municipio.nome}`);
-            }
-            
-            // Atualizar cabeçalho de risco
-            const riscoHeader = cardElement.querySelector('.card-header');
-            if (riscoHeader) {
-              let classe;
-              switch(municipio.risco) {
-                case 'alto':
-                  classe = 'bg-danger';
-                  break;
-                case 'medio':
-                  classe = 'bg-warning';
-                  break;
-                default:
-                  classe = 'bg-success';
-              }
-              
-              // Atualizar apenas a classe de risco, mantendo outras classes
-              riscoHeader.classList.remove('bg-danger', 'bg-warning', 'bg-success');
-              riscoHeader.classList.add(classe);
-            }
-            
-            // Atualizar badge de risco
-            const riscoBadge = cardElement.querySelector('.badge');
-            if (riscoBadge) {
-              let classe, icone, texto;
-              switch(municipio.risco) {
-                case 'alto':
-                  classe = 'bg-danger';
-                  icone = 'exclamation-triangle';
-                  texto = 'Alto';
-                  break;
-                case 'medio':
-                  classe = 'bg-warning';
-                  icone = 'exclamation-circle';
-                  texto = 'Médio';
-                  break;
-                default:
-                  classe = 'bg-success';
-                  icone = 'check-circle';
-                  texto = 'Baixo';
-              }
-              
-              riscoBadge.className = `badge ${classe} ms-2`;
-              riscoBadge.innerHTML = `<i class="fas fa-${icone} me-1"></i> Risco ${texto}`;
-            }
+            // Atualizar contadores
+            totalMunicipios++;
+            if (municipio.risco === 'alto') riscoAlto++;
+            else if (municipio.risco === 'medio') riscoMedio++;
+            else riscoBaixo++;
           });
           
-          console.log('Interface atualizada com sucesso');
+          // Atualizar contador no cabeçalho
+          const contadorElement = document.getElementById('contador-municipios');
+          if (contadorElement) {
+            contadorElement.textContent = totalMunicipios;
+          }
+          
+          // Atualizar contadores de risco
+          const contadorAlto = document.getElementById('contador-risco-alto');
+          const contadorMedio = document.getElementById('contador-risco-medio');
+          const contadorBaixo = document.getElementById('contador-risco-baixo');
+          
+          if (contadorAlto) contadorAlto.textContent = riscoAlto;
+          if (contadorMedio) contadorMedio.textContent = riscoMedio;
+          if (contadorBaixo) contadorBaixo.textContent = riscoBaixo;
+          
+          console.log(`Interface atualizada: ${totalMunicipios} municípios (${riscoAlto} alto, ${riscoMedio} médio, ${riscoBaixo} baixo)`);
         }
         
         // Função para fechar o modal
@@ -1694,232 +1692,159 @@
         
         // Função para processar alertas da API
         async function carregarAlertas() {
+          console.log('Carregando alertas dos municípios...');
+          
           try {
             // Adicionar timestamp para evitar cache
             const timestamp = new Date().getTime();
-            const url = `https://sheetdb.io/api/v1/jhx7c3n5n0lkg/sheet=Alertas?_=${timestamp}`;
+            const url = `https://sheetdb.io/api/v1/jhx7c3n5n0lkg/sheet/alertas?_=${timestamp}`;
             
-            // Buscar dados da aba "Alertas"
-            const response = await fetch(url, {
+            // Tentar fazer fetch com CORS
+            console.log('Buscando alertas da API:', url);
+            const resposta = await fetch(url, {
               method: 'GET',
               headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
               },
               mode: 'cors',
               cache: 'no-cache'
             });
             
-            if (!response.ok) {
-              throw new Error(`Falha ao carregar alertas: ${response.status} ${response.statusText}`);
+            if (!resposta.ok) {
+              throw new Error(`Falha ao buscar alertas: ${resposta.status} ${resposta.statusText}`);
             }
             
-            const dados = await response.json();
+            const dados = await resposta.json();
             console.log('Alertas recebidos da API:', dados);
             
-            if (!dados || dados.length === 0) {
-              console.warn('Nenhum alerta recebido da API');
-              dadosAlertas = [];
-              atualizarContadorAlertas();
-              return;
-            }
+            // Processar alertas
+            const alertas = processarAlertas(dados);
             
-            // Processar os alertas
-            dadosAlertas = dados.map(alerta => {
-              return {
-                id: alerta.ID || `alerta-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                municipioId: gerarMunicipioId(alerta.Municipio),
-                titulo: alerta.Titulo,
-                nivel: (alerta.Nivel || 'medio').toLowerCase(),
-                descricao: alerta.Descricao,
-                emitidoEm: alerta['Emitido Em'] || new Date().toISOString(),
-                instrucoes: alerta.Instrucoes ? alerta.Instrucoes.split('\n') : [],
-                abrigos: alerta.Abrigos ? alerta.Abrigos.split('\n') : []
-              };
-            });
+            // Armazenar alertas para uso em outras funções
+            window.alertasMunicipios = alertas;
             
-            console.log('Alertas processados:', dadosAlertas);
-            
-            // Atualizar contador de alertas na interface
-            atualizarContadorAlertas();
-            
-            // Atualizar os alertas dinâmicos no container principal
-            atualizarAlertasDinamicos();
-            
+            return alertas;
           } catch (erro) {
             console.error('Erro ao carregar alertas:', erro);
+            
+            // Tentar carregar alertas locais como fallback
             try {
-              // Tentar método alternativo via JSONP se CORS falhar
-              return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                const callbackName = 'jsonpCallback_alertas_' + Math.random().toString(36).substr(2, 9);
-                
-                window[callbackName] = function(dados) {
-                  console.log('Alertas recebidos via JSONP:', dados);
-                  if (dados && dados.length > 0) {
-                    dadosAlertas = dados.map(alerta => {
-                      return {
-                        id: alerta.ID || `alerta-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                        municipioId: gerarMunicipioId(alerta.Municipio),
-                        titulo: alerta.Titulo,
-                        nivel: (alerta.Nivel || 'medio').toLowerCase(),
-                        descricao: alerta.Descricao,
-                        emitidoEm: alerta['Emitido Em'] || new Date().toISOString(),
-                        instrucoes: alerta.Instrucoes ? alerta.Instrucoes.split('\n') : [],
-                        abrigos: alerta.Abrigos ? alerta.Abrigos.split('\n') : []
-                      };
-                    });
-                    atualizarContadorAlertas();
-                    atualizarAlertasDinamicos();
-                  } else {
-                    dadosAlertas = [];
-                    atualizarContadorAlertas();
-                  }
-                  
-                  delete window[callbackName];
-                  document.head.removeChild(script);
-                  resolve(true);
-                };
-                
-                script.onerror = function() {
-                  delete window[callbackName];
-                  document.head.removeChild(script);
-                  console.error('Falha no carregamento JSONP para alertas');
-                  dadosAlertas = [];
-                  atualizarContadorAlertas();
-                  reject(new Error('Falha no carregamento JSONP para alertas'));
-                };
-                
-                const timestamp = new Date().getTime();
-                script.src = `https://sheetdb.io/api/v1/jhx7c3n5n0lkg/sheet=Alertas?callback=${callbackName}&_=${timestamp}`;
-                document.head.appendChild(script);
-              });
-            } catch (erroJsonp) {
-              console.error('Erro no fallback JSONP para alertas:', erroJsonp);
-              dadosAlertas = [];
-              atualizarContadorAlertas();
+              const respostaLocal = await fetch('alertas.json');
+              if (respostaLocal.ok) {
+                const dadosLocais = await respostaLocal.json();
+                console.log('Alertas locais carregados com sucesso:', dadosLocais);
+                const alertas = processarAlertas(dadosLocais);
+                window.alertasMunicipios = alertas;
+                return alertas;
+              }
+            } catch (erroLocal) {
+              console.error('Falha ao carregar alertas locais:', erroLocal);
             }
+            
+            // Se chegou aqui, todas as tentativas falharam
+            console.warn('Não foi possível carregar alertas. Usando array vazio.');
+            window.alertasMunicipios = [];
+            return [];
           }
         }
         
-        // Função para atualizar alertas dinâmicos no container principal
-        function atualizarAlertasDinamicos() {
-          const container = document.getElementById('alertas-container');
-          if (!container) return;
+        // Função para processar alertas
+        function processarAlertas(dados) {
+          console.log('Processando alertas:', dados);
           
-          // Limpar alertas antigos
-          container.innerHTML = '';
+          if (!Array.isArray(dados)) {
+            console.warn('Dados de alertas não são um array:', dados);
+            return [];
+          }
           
-          // Filtrar apenas alertas de risco alto
-          const alertasAlto = dadosAlertas.filter(alerta => alerta.nivel === 'alto');
-          
-          if (alertasAlto.length === 0) return;
-          
-          // Adicionar alertas de risco alto ao container
-          alertasAlto.forEach(alerta => {
-            // Obter nome do município
-            const municipioId = alerta.municipioId;
-            const municipio = dadosMunicipios[municipioId];
-            const nomeMunicipio = municipio ? municipio.nome : 'Desconhecido';
+          // Processar cada alerta
+          const alertas = dados.map((alerta, index) => {
+            // Verificar dados essenciais
+            const municipio = alerta.Municipio || alerta.municipio;
+            if (!municipio) {
+              console.warn(`Alerta #${index} sem município definido:`, alerta);
+              return null;
+            }
             
-            // Formatar data
-            const dataEmissao = new Date(alerta.emitidoEm);
-            const dataFormatada = dataEmissao.toLocaleString('pt-BR');
+            // Gerar ID para o município
+            const municipioId = gerarMunicipioId(municipio);
             
-            const alertaHTML = `
-              <div class="alert alert-danger mb-3">
-                <div class="d-flex">
-                  <div class="me-3">
-                    <i class="fas fa-exclamation-triangle fa-2x" aria-hidden="true"></i>
-                  </div>
-                  <div>
-                    <h4 class="alert-heading mb-1">${alerta.titulo}</h4>
-                    <p class="mb-1">${alerta.descricao}</p>
-                    <small class="text-muted">Emitido em: ${dataFormatada}</small>
-                  </div>
-                </div>
-                <div class="mt-2 text-end">
-                  <button class="btn btn-sm btn-outline-danger" onclick="abrirModal('${municipioId}')">
-                    <i class="fas fa-info-circle me-1"></i> Ver detalhes
-                  </button>
-                </div>
-              </div>
-            `;
-            
-            container.innerHTML += alertaHTML;
-          });
+            return {
+              id: alerta.ID || alerta.id || `alerta-${index}`,
+              municipioId: municipioId,
+              municipio: municipio,
+              tipo: alerta.Tipo || alerta.tipo || 'informativo',
+              nivel: alerta.Nivel || alerta.nivel || 'baixo',
+              mensagem: alerta.Mensagem || alerta.mensagem || 'Alerta sem mensagem definida',
+              dataInicio: alerta['Data Início'] || alerta.dataInicio || new Date().toISOString(),
+              dataFim: alerta['Data Fim'] || alerta.dataFim || '',
+              abrigos: alerta.Abrigos || alerta.abrigos || 0,
+              instrucoes: alerta.Instrucoes || alerta.instrucoes || 'Siga as orientações da Defesa Civil local.'
+            };
+          }).filter(alerta => alerta !== null);
+          
+          console.log(`${alertas.length} alertas processados com sucesso`);
+          return alertas;
         }
         
-        // Inicializar carregamento de dados ao carregar a página
+        // Inicializar carregamento de dados quando a página carregar
         document.addEventListener('DOMContentLoaded', async function() {
-          console.log('Página carregada. Iniciando carregamento de dados...');
+          console.log('Página carregada. Inicializando carregamento de dados...');
           
-          // Verificar se os cards dos municípios existem
-          const cards = document.querySelectorAll('[data-municipio]');
-          console.log(`Encontrados ${cards.length} cards de municípios`);
+          // Carregar dados iniciais
+          await carregarDados();
           
-          // Desativar cache para fetch
-          const headers = new Headers();
-          headers.append('pragma', 'no-cache');
-          headers.append('cache-control', 'no-cache');
-          
-          try {
-            // Carregar dados dos municípios
+          // Configurar atualização automática a cada 5 minutos
+          setInterval(async function() {
+            console.log('Atualizando dados automaticamente...');
             await carregarDados();
-            
-            // Carregar alertas
-            await carregarAlertas();
-            
-            // Atualizar a interface
-            atualizarInterface();
-            
-            // Atualizar contador de alertas
-            atualizarContadorAlertas();
-            
-            console.log('Todos os dados carregados e interface atualizada com sucesso');
-          } catch (erro) {
-            console.error('Erro ao inicializar dados:', erro);
-          }
+          }, 5 * 60 * 1000); // 5 minutos
           
-          // Configurar eventos dos botões de filtro
-          document.querySelectorAll('.btn-filtro').forEach(botao => {
-            botao.addEventListener('click', function() {
-              // Remover classe 'active' de todos os botões
-              document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('active'));
-              
-              // Adicionar classe 'active' ao botão clicado
-              this.classList.add('active');
-              
-              // Obter filtro
-              const filtro = this.getAttribute('data-filtro');
-              
-              // Filtrar cards
-              filtrarMunicipios(filtro);
-            });
-          });
-          
-          // Configurar busca por texto
-          const buscaInput = document.getElementById('municipio-busca');
-          if (buscaInput) {
-            buscaInput.addEventListener('input', function() {
-              const texto = this.value.toLowerCase().trim();
-              filtrarMunicipiosPorTexto(texto);
+          // Configurar filtros
+          const filtroRisco = document.getElementById('filtro-risco');
+          if (filtroRisco) {
+            filtroRisco.addEventListener('change', function() {
+              const risco = this.value;
+              filtrarMunicipiosPorRisco(risco);
             });
           }
           
-          // Atualizar a cada 5 minutos
-          setInterval(async () => {
-            try {
-              await carregarDados();
-              await carregarAlertas();
-              atualizarInterface();
-              atualizarContadorAlertas();
-              console.log('Dados atualizados automaticamente');
-            } catch (erro) {
-              console.error('Erro ao atualizar dados:', erro);
-            }
-          }, 5 * 60 * 1000);
+          // Configurar busca
+          const campoBusca = document.getElementById('busca-municipio');
+          if (campoBusca) {
+            campoBusca.addEventListener('input', function() {
+              const termo = this.value.trim().toLowerCase();
+              buscarMunicipios(termo);
+            });
+          }
+          
+          console.log('Inicialização concluída.');
         });
+        
+        // Função para depuração
+        window.debugMunicipios = function() {
+          console.log('=== DEPURAÇÃO DE MUNICÍPIOS ===');
+          console.log('Municípios carregados:', window.dadosMunicipios);
+          console.log('Alertas carregados:', window.alertasMunicipios);
+          
+          // Contar municípios por risco
+          if (window.dadosMunicipios) {
+            const riscos = Object.values(window.dadosMunicipios).reduce((acc, mun) => {
+              acc[mun.risco] = (acc[mun.risco] || 0) + 1;
+              return acc;
+            }, {});
+            console.log('Distribuição de risco:', riscos);
+          }
+          
+          // Verificar elementos na página
+          console.log('Container de municípios:', document.getElementById('lista-municipios'));
+          console.log('Cards de municípios:', document.querySelectorAll('.municipio-card').length);
+          
+          return 'Depuração concluída. Verifique o console para mais detalhes.';
+        };
         
         // Função para filtrar municípios por risco ou alertas
         function filtrarMunicipios(filtro) {
@@ -2025,6 +1950,8 @@
         
         // Função para criar HTML de um card de município
         function criarCardMunicipio(municipioId, municipio) {
+          console.log(`Criando card para município: ${municipio.nome} (${municipioId})`);
+          
           // Determinar classe de risco
           let classeRisco, iconeRisco, textoRisco;
           switch(municipio.risco) {
@@ -2062,41 +1989,55 @@
           
           // Formatar variação
           const sinal = municipio.variacao24h > 0 ? '+' : '';
+          const variacaoTexto = `${sinal}${municipio.variacao24h.toFixed(2)}m em 24h`;
           
-          // Criar HTML do card
+          // Verificar estrutura dos dados
+          const rio = municipio.rio || "não informado";
+          const nivelAtual = isNaN(municipio.nivelAtual) ? 0 : municipio.nivelAtual;
+          const dataAtualizacao = formatarData(municipio.atualizadoEm || new Date().toISOString());
+          
+          // Escapar texto para HTML
+          const escaparHTML = (str) => String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+          
+          // Gerar HTML do card conforme estrutura do site
           return `
             <div class="col-md-6 col-lg-4 mb-4">
-              <div class="card h-100 municipio-card" data-municipio="${municipioId}" onclick="abrirModal('${municipioId}')">
+              <div class="card h-100 municipio-card" data-municipio="${escaparHTML(municipioId)}" onclick="abrirModal('${escaparHTML(municipioId)}')">
                 <div class="card-header bg-${classeRisco} text-white">
                   <h5 class="card-title mb-0">
-                    <i class="fas fa-map-marker-alt me-2"></i> ${municipio.nome}
+                    <i class="fas fa-map-marker-alt me-2"></i> ${escaparHTML(municipio.nome)}
                   </h5>
                 </div>
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-muted">Rio ${municipio.rio || "não informado"}</span>
+                    <span class="text-muted">Rio ${escaparHTML(rio)}</span>
                     <span class="badge bg-${classeRisco}">
                       <i class="fas fa-${iconeRisco} me-1"></i> Risco ${textoRisco}
                     </span>
                   </div>
                   <div class="d-flex justify-content-between align-items-center">
                     <div>
-                      <h3 class="mb-0" data-nivel>${municipio.nivelAtual.toFixed(2)}m</h3>
+                      <h3 class="mb-0" data-nivel>${nivelAtual.toFixed(2)}m</h3>
                       <small class="text-muted">Nível atual</small>
                     </div>
                     <div class="text-end">
-                      <span class="d-block" data-tendencia id="tendencia-${municipioId}">
+                      <span class="d-block" data-tendencia id="tendencia-${escaparHTML(municipioId)}">
                         <i class="fas ${iconeTendencia} ${classeTendencia}"></i> ${municipio.tendencia.charAt(0).toUpperCase() + municipio.tendencia.slice(1)}
                       </span>
-                      <small class="text-muted" data-variacao id="variacao-${municipioId}">
-                        ${sinal}${municipio.variacao24h.toFixed(2)}m em 24h
+                      <small class="text-muted" data-variacao id="variacao-${escaparHTML(municipioId)}">
+                        ${variacaoTexto}
                       </small>
                     </div>
                   </div>
                 </div>
                 <div class="card-footer bg-light">
                   <small class="text-muted">
-                    <i class="far fa-clock me-1"></i> Atualizado: <span data-atualizacao id="atualizacao-${municipioId}">${formatarData(municipio.atualizadoEm)}</span>
+                    <i class="far fa-clock me-1"></i> Atualizado: <span data-atualizacao id="atualizacao-${escaparHTML(municipioId)}">${dataAtualizacao}</span>
                   </small>
                 </div>
               </div>
@@ -2117,6 +2058,74 @@
             contador.textContent = dadosAlertas.length.toString();
             contador.style.display = dadosAlertas.length > 0 ? 'inline' : 'none';
           }
+        }
+        
+        // Função para filtrar municípios por risco
+        function filtrarMunicipiosPorRisco(risco) {
+          console.log(`Filtrando municípios por risco: ${risco}`);
+          
+          const cards = document.querySelectorAll('.municipio-card');
+          
+          if (risco === 'todos') {
+            // Mostrar todos os cards
+            cards.forEach(card => {
+              card.closest('.col-md-6').style.display = 'block';
+            });
+          } else {
+            // Filtrar por risco
+            cards.forEach(card => {
+              const cardRisco = card.querySelector('.badge')?.textContent?.toLowerCase() || '';
+              const mostrar = risco === 'todos' || cardRisco.includes(risco.toLowerCase());
+              card.closest('.col-md-6').style.display = mostrar ? 'block' : 'none';
+            });
+          }
+          
+          // Verificar se há resultados
+          const cardsVisiveis = document.querySelectorAll('.municipio-card[style*="display: block"]').length;
+          const mensagemSemResultados = document.getElementById('mensagem-sem-resultados');
+          
+          if (cardsVisiveis === 0 && mensagemSemResultados) {
+            mensagemSemResultados.style.display = 'block';
+          } else if (mensagemSemResultados) {
+            mensagemSemResultados.style.display = 'none';
+          }
+          
+          console.log(`Filtro aplicado: ${cardsVisiveis} municípios visíveis`);
+        }
+        
+        // Função para buscar municípios por texto
+        function buscarMunicipios(termo) {
+          console.log(`Buscando municípios com termo: "${termo}"`);
+          
+          const cards = document.querySelectorAll('.municipio-card');
+          let encontrados = 0;
+          
+          cards.forEach(card => {
+            const titulo = card.querySelector('.card-title')?.textContent?.toLowerCase() || '';
+            const rio = card.querySelector('.text-muted')?.textContent?.toLowerCase() || '';
+            const mostrar = termo === '' || titulo.includes(termo) || rio.includes(termo);
+            
+            card.closest('.col-md-6').style.display = mostrar ? 'block' : 'none';
+            
+            if (mostrar) encontrados++;
+          });
+          
+          // Verificar se há resultados
+          const mensagemSemResultados = document.getElementById('mensagem-sem-resultados');
+          
+          if (encontrados === 0 && mensagemSemResultados) {
+            mensagemSemResultados.style.display = 'block';
+            mensagemSemResultados.innerHTML = `
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                Nenhum município encontrado com o termo "${termo}".
+              </div>
+            `;
+          } else if (mensagemSemResultados) {
+            mensagemSemResultados.style.display = 'none';
+          }
+          
+          console.log(`Busca concluída: ${encontrados} municípios encontrados`);
         }
     </script>
     
