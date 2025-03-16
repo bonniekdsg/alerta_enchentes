@@ -1122,433 +1122,260 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
     <script>
-        // Dados dos municípios para preencher o modal
-        const dadosMunicipios = {
-            'rio-branco': {
-                nome: 'Rio Branco',
-                rio: 'Rio Acre',
-                nivelAtual: 15.17,
-                nivelAlerta: 13.5,
-                nivelInundacao: 14.5,
-                variacao24h: '+0.21',
-                tendencia: 'subindo',
-                status: 'Crítico',
-                statusClass: 'bg-danger',
-                atualizacao: 'há 30 minutos',
-                defesaCivil: '(68) 3223-1177',
-                bombeiros: '(68) 3223-1110',
-                historicoNiveis: [14.5, 14.7, 14.9, 15.0, 15.1, 15.15, 15.17],
-                alertas: []
-            },
-            'cruzeiro-do-sul': {
-                nome: 'Cruzeiro do Sul',
-                rio: 'Rio Juruá',
-                nivelAtual: 12.30,
-                nivelAlerta: 13.00,
-                nivelInundacao: 14.00,
-                variacao24h: '+0.20',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 30 minutos',
-                defesaCivil: '(68) 3322-4208',
-                bombeiros: '(68) 3322-1866',
-                historicoNiveis: [11.9, 12.0, 12.1, 12.1, 12.2, 12.25, 12.3],
-                alertas: []
-            },
-            'tarauaca': {
-                nome: 'Tarauacá',
-                rio: 'Rio Tarauacá',
-                nivelAtual: 8.50,
-                nivelAlerta: 12.00,
-                nivelInundacao: 13.00,
-                variacao24h: '-0.10',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 45 minutos',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [8.7, 8.65, 8.62, 8.58, 8.55, 8.52, 8.5],
-                alertas: []
-            },
-            'feijo': {
-                nome: 'Feijó',
-                rio: 'Rio Envira',
-                nivelAtual: 10.20,
-                nivelAlerta: 11.50,
-                nivelInundacao: 12.50,
-                variacao24h: '+0.15',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [9.8, 9.9, 10.0, 10.1, 10.15, 10.18, 10.2],
-                alertas: []
-            },
-            'aldeia-dos-patos': {
-                nome: 'Aldeia dos Patos',
-                rio: 'Rio Purus',
-                nivelAtual: 7.80,
-                nivelAlerta: 11.00,
-                nivelInundacao: 12.00,
-                variacao24h: '-0.05',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [7.7, 7.75, 7.78, 7.8, 7.82, 7.85, 7.88],
-                alertas: []
-            },
-            'assis-brasil': {
-                nome: 'Assis Brasil',
-                rio: 'Rio Acre',
-                nivelAtual: 6.40,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '-0.10',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 1 hora',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3463-2614',
-                historicoNiveis: [6.5, 6.55, 6.58, 6.6, 6.62, 6.65, 6.68],
-                alertas: []
-            },
-            'brasileia': {
-                nome: 'Brasiléia',
-                rio: 'Rio Acre',
-                nivelAtual: 9.80,
-                nivelAlerta: 11.00,
-                nivelInundacao: 12.00,
-                variacao24h: '+0.20',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 45 minutos',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [9.6, 9.7, 9.75, 9.78, 9.8, 9.82, 9.85],
-                alertas: []
-            },
-            'xapuri-dolores': {
-                nome: 'Xapuri C. Dolores',
-                rio: 'Rio Xapuri',
-                nivelAtual: 6.90,
-                nivelAlerta: 10.00,
-                nivelInundacao: 11.00,
-                variacao24h: '-0.05',
-                tendencia: 'estavel',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 3 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [6.8, 6.85, 6.88, 6.9, 6.92, 6.95, 6.98],
-                alertas: []
-            },
-            'xapuri': {
-                nome: 'Xapuri',
-                rio: 'Rio Acre',
-                nivelAtual: 9.20,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '+0.15',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [9.0, 9.1, 9.15, 9.18, 9.2, 9.22, 9.25],
-                alertas: []
-            },
-            'capixaba': {
-                nome: 'Capixaba',
-                rio: 'Rio Abunã',
-                nivelAtual: 7.20,
-                nivelAlerta: 10.00,
-                nivelInundacao: 11.00,
-                variacao24h: '-0.05',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 4 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [7.1, 7.05, 7.02, 7.0, 7.0, 7.0, 7.0],
-                alertas: []
-            },
-            'espalha': {
-                nome: 'Espalha',
-                rio: 'Rio Iaco',
-                nivelAtual: 6.80,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '-0.05',
-                tendencia: 'estavel',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 3 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [6.7, 6.75, 6.78, 6.8, 6.82, 6.85, 6.88],
-                alertas: []
-            },
-            'riozinho-do-rola': {
-                nome: 'Riozinho do Rola',
-                rio: 'Riozinho do Rola',
-                nivelAtual: 8.90,
-                nivelAlerta: 9.50,
-                nivelInundacao: 10.50,
-                variacao24h: '+0.25',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 1 hora',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [8.6, 8.65, 8.7, 8.75, 8.8, 8.85, 8.9],
-                alertas: []
-            },
-            'porto-acre': {
-                nome: 'Porto Acre',
-                rio: 'Rio Acre',
-                nivelAtual: 13.80,
-                nivelAlerta: 13.00,
-                nivelInundacao: 14.00,
-                variacao24h: '+0.30',
-                tendencia: 'subindo',
-                status: 'Crítico',
-                statusClass: 'bg-danger',
-                atualizacao: 'há 30 minutos',
-                defesaCivil: '(68) 3223-1177',
-                bombeiros: '(68) 3211-1110',
-                historicoNiveis: [13.5, 13.6, 13.65, 13.7, 13.75, 13.78, 13.8],
-                alertas: []
-            },
-            'jordao': {
-                nome: 'Jordão',
-                rio: 'Rio Jordão',
-                nivelAtual: 9.10,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '+0.15',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3463-2614',
-                historicoNiveis: [9.0, 9.1, 9.15, 9.18, 9.2, 9.22, 9.25],
-                alertas: []
-            },
-            'seringal-santa-helena': {
-                nome: 'Seringal Santa Helena',
-                rio: 'Rio Purus',
-                nivelAtual: 7.50,
-                nivelAlerta: 10.00,
-                nivelInundacao: 11.00,
-                variacao24h: '-0.10',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 5 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [7.4, 7.45, 7.48, 7.5, 7.52, 7.55, 7.58],
-                alertas: []
-            },
-            'mancio-lima': {
-                nome: 'Mâncio Lima',
-                rio: 'Rio Moa',
-                nivelAtual: 6.90,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '-0.05',
-                tendencia: 'estavel',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 3 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [6.8, 6.85, 6.88, 6.9, 6.92, 6.95, 6.98],
-                alertas: []
-            },
-            'ponte-do-liberdade': {
-                nome: 'Ponte do Liberdade',
-                rio: 'Rio Liberdade',
-                nivelAtual: 7.30,
-                nivelAlerta: 10.00,
-                nivelInundacao: 11.00,
-                variacao24h: '-0.05',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [7.2, 7.25, 7.28, 7.3, 7.32, 7.35, 7.38],
-                alertas: []
-            },
-            'porto-walter': {
-                nome: 'Porto Walter',
-                rio: 'Rio Juruá',
-                nivelAtual: 10.20,
-                nivelAlerta: 11.00,
-                nivelInundacao: 12.00,
-                variacao24h: '+0.15',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 1 hora',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [10.0, 10.1, 10.15, 10.18, 10.2, 10.22, 10.25],
-                alertas: []
-            },
-            'marechal-thaumaturgo': {
-                nome: 'Marechal Thaumaturgo',
-                rio: 'Rio Juruá',
-                nivelAtual: 12.80,
-                nivelAlerta: 12.00,
-                nivelInundacao: 13.00,
-                variacao24h: '+0.25',
-                tendencia: 'subindo',
-                status: 'Crítico',
-                statusClass: 'bg-danger',
-                atualizacao: 'há 45 minutos',
-                defesaCivil: '(68) 3223-1177',
-                bombeiros: '(68) 3211-1110',
-                historicoNiveis: [12.5, 12.55, 12.6, 12.65, 12.7, 12.75, 12.8],
-                alertas: []
-            }
-        };
+        // Variáveis globais
+        let dadosMunicipios = {};
+        let dadosAlertas = [];
+        let ultimaAtualizacao = '';
         
-        // Variável para armazenar a instância do gráfico
-        let historicoChart;
-        
-        // Função para abrir modal com detalhes do município
-        function abrirModal(municipioId) {
-            if (!dadosMunicipios[municipioId]) {
-                console.error(`Município ${municipioId} não encontrado nos dados.`);
-                return;
+        // Função para carregar dados da API SheetDB
+        async function carregarDados() {
+          try {
+            // Buscar dados da aba "Níveis dos Rios"
+            const respostaNiveis = await fetch('https://sheetdb.io/api/v1/jhx7c3n5n0lkg');
+            if (!respostaNiveis.ok) {
+              throw new Error('Falha ao carregar dados dos níveis dos rios');
             }
+            const dadosNiveis = await respostaNiveis.json();
             
-            const municipio = dadosMunicipios[municipioId];
+            // Buscar dados da aba "Alertas"
+            // Nota: Se a API já retorna ambas as abas, essa chamada adicional pode não ser necessária
+            // const respostaAlertas = await fetch('https://sheetdb.io/api/v1/jhx7c3n5n0lkg/sheet=Alertas');
+            // const dadosAlertas = await respostaAlertas.json();
             
-            // Preencher os dados no modal
-            document.getElementById('municipioModalLabel').textContent = municipio.nome;
-            document.getElementById('modal-rio').textContent = municipio.rio;
-            document.getElementById('modal-nivel').textContent = `${municipio.nivelAtual}m`;
+            // Processar os dados dos níveis dos rios
+            processarDados(dadosNiveis);
             
-            const tendenciaIcon = municipio.tendencia === 'subindo' ? 
-                '<i class="fas fa-arrow-up text-danger me-1"></i>' : 
-                '<i class="fas fa-arrow-down text-success me-1"></i>';
+            // Atualizar a interface
+            atualizarInterface();
             
-            document.getElementById('modal-tendencia').innerHTML = `${tendenciaIcon} ${municipio.variacao24h}m (24h)`;
-            
-            document.getElementById('modal-status').innerHTML = 
-                `<span class="badge ${municipio.statusClass}">${municipio.status}</span>`;
-            
-            document.getElementById('modal-atualizacao').textContent = municipio.atualizacao;
-            document.getElementById('modal-nivel-alerta').textContent = `${municipio.nivelAlerta}m`;
-            document.getElementById('modal-nivel-inundacao').textContent = `${municipio.nivelInundacao}m`;
-            document.getElementById('modal-defesa-civil').textContent = municipio.defesaCivil;
-            document.getElementById('modal-bombeiros').textContent = municipio.bombeiros;
-            
-            // Carregar alertas específicos para este município
-            carregarAlertas(null, municipioId);
-            
-            // Renderizar o gráfico de histórico
-            if (historicoChart) {
-                historicoChart.destroy();
-            }
-            
-            const ctx = document.getElementById('historicoChart').getContext('2d');
-            historicoChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['6h', '9h', '12h', '15h', '18h', '21h', 'Agora'],
-                    datasets: [{
-                        label: 'Nível do Rio (m)',
-                        data: municipio.historicoNiveis,
-                        borderColor: '#0088cc',
-                        backgroundColor: 'rgba(0, 136, 204, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'Metros'
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Abrir o modal
-            const municipioModal = new bootstrap.Modal(document.getElementById('municipioModal'));
-            municipioModal.show();
+            console.log('Dados carregados com sucesso via SheetDB API');
+          } catch (erro) {
+            console.error('Erro ao carregar dados:', erro);
+            alert('Não foi possível carregar os dados. Tente novamente mais tarde.');
+          }
         }
         
-        // Inicializar tooltips do Bootstrap
-        document.addEventListener('DOMContentLoaded', function() {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
+        // Função para processar os dados recebidos da API
+        function processarDados(dados) {
+          // Limpar dados anteriores
+          dadosMunicipios = {};
+          dadosAlertas = [];
+          
+          // Processar dados dos municípios
+          dados.forEach(item => {
+            // Criar ID do município (slug) baseado no nome
+            const municipioId = item.Nome.toLowerCase()
+              .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // Remove acentos
+              .replace(/[^\w\s-]/g, '') // Remove caracteres especiais
+              .replace(/\s+/g, '-') // Substitui espaços por hífens
+              .replace(/-+/g, '-'); // Remove hífens duplicados
             
-            // Nota: A configuração dos botões de filtro foi movida para app.js
-            // para evitar duplicação e conflitos
-            
-            // Campo de busca - também movido para app.js
-        });
+            // Adicionar município ao objeto de dados
+            dadosMunicipios[municipioId] = {
+              nome: item.Nome,
+              rio: item.Rio,
+              nivelAtual: parseFloat(item['Nível Atual'].replace(',', '.')),
+              nivelAlerta: parseFloat(item['Nível Alerta'].replace(',', '.')),
+              nivelInundacao: parseFloat(item['Nível Inundação'].replace(',', '.')),
+              variacao24h: parseFloat(item['Variação 24h'].replace(',', '.')),
+              tendencia: item['Tendência\t'].toLowerCase(),
+              risco: item.Risco.toLowerCase(),
+              atualizadoEm: item['Atualizado Em'],
+              latitude: parseFloat(item['Latitude\t']),
+              longitude: parseFloat(item.Longitude),
+              contatoDefesaCivil: item['Defesa Civil'],
+              contatoBombeiros: item.Bombeiros
+            };
+          });
+          
+          // Atualizar a última atualização com base no município mais recentemente atualizado
+          if (dados.length > 0) {
+            ultimaAtualizacao = dados[0]['Atualizado Em'] || '';
+            // Atualizar o elemento na página
+            const dataFormatada = formatarData(ultimaAtualizacao);
+            document.getElementById('ultima-atualizacao').textContent = dataFormatada;
+          }
+        }
         
-        // // Função para processar alertas e associá-los aos municípios correspondentes
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     // Outras inicializações...
-            
-        //     // Adicionar ícones de alerta nos cards dos municípios que têm alertas
-        //     atualizarIconesAlerta();
-        // });
+        // Função para formatar data do formato ISO para um formato mais amigável
+        function formatarData(dataISO) {
+          try {
+            const data = new Date(dataISO);
+            return data.toLocaleString('pt-BR');
+          } catch (e) {
+            return dataISO; // Retorna o original se não conseguir formatar
+          }
+        }
         
-        // Função para atualizar os ícones de alerta nos cards dos municípios
-        function atualizarIconesAlerta() {
-            if (typeof dadosMunicipios === 'undefined') return;
+        // Função para calcular tempo decorrido
+        function calcularTempoDecorrido(dataString) {
+          try {
+            const data = new Date(dataString);
+            const agora = new Date();
+            const diferencaMs = agora - data;
             
-            for (const [municipioId, municipio] of Object.entries(dadosMunicipios)) {
-                if (municipio.alertas && municipio.alertas.length > 0) {
-                    const cardElement = document.querySelector(`.municipio-card[data-id="${municipioId}"]`);
-                    if (cardElement) {
-                        // Verificar se o ícone já existe para evitar duplicação
-                        if (!cardElement.querySelector('.alerta-card-icon')) {
-                            const alertIcon = document.createElement('div');
-                            alertIcon.className = 'alerta-card-icon';
-                            alertIcon.innerHTML = '<i class="fas fa-bell"></i>';
-                            alertIcon.title = `${municipio.alertas.length} alerta(s) ativo(s)`;
-                            cardElement.appendChild(alertIcon);
-                        }
-                    }
-                }
+            // Converter para minutos, horas ou dias
+            const minutos = Math.floor(diferencaMs / (1000 * 60));
+            if (minutos < 60) return `há ${minutos} minuto${minutos !== 1 ? 's' : ''}`;
+            
+            const horas = Math.floor(minutos / 60);
+            if (horas < 24) return `há ${horas} hora${horas !== 1 ? 's' : ''}`;
+            
+            const dias = Math.floor(horas / 24);
+            return `há ${dias} dia${dias !== 1 ? 's' : ''}`;
+          } catch (e) {
+            return 'data desconhecida';
+          }
+        }
+        
+        // Função para atualizar a interface com os dados
+        function atualizarInterface() {
+          // Atualizar cards dos municípios
+          Object.keys(dadosMunicipios).forEach(municipioId => {
+            const municipio = dadosMunicipios[municipioId];
+            
+            // Atualizar tendência
+            const tendenciaEl = document.getElementById(`tendencia-${municipioId}`);
+            if (tendenciaEl) {
+              let icone, classe;
+              switch(municipio.tendencia) {
+                case 'subindo':
+                  icone = 'fa-arrow-up';
+                  classe = 'text-danger';
+                  break;
+                case 'descendo':
+                  icone = 'fa-arrow-down';
+                  classe = 'text-success';
+                  break;
+                default:
+                  icone = 'fa-arrows-alt-h';
+                  classe = 'text-warning';
+              }
+              tendenciaEl.innerHTML = `<i class="fas ${icone} ${classe}"></i> ${municipio.tendencia.charAt(0).toUpperCase() + municipio.tendencia.slice(1)}`;
             }
+            
+            // Atualizar variação
+            const variacaoEl = document.getElementById(`variacao-${municipioId}`);
+            if (variacaoEl) {
+              const sinal = municipio.variacao24h > 0 ? '+' : '';
+              variacaoEl.textContent = `${sinal}${municipio.variacao24h.toFixed(2)}m em 24h`;
+            }
+            
+            // Atualizar tempo decorrido desde a última atualização
+            const atualizacaoEl = document.getElementById(`atualizacao-${municipioId}`);
+            if (atualizacaoEl && municipio.atualizadoEm) {
+              atualizacaoEl.textContent = calcularTempoDecorrido(municipio.atualizadoEm);
+            }
+          });
+        }
+        
+        // Inicializar carregamento de dados ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+          carregarDados();
+          
+          // Atualizar a cada 5 minutos
+          setInterval(carregarDados, 5 * 60 * 1000);
+        });
+
+        // Função para abrir o modal de detalhes do município
+        function abrirModal(municipioId) {
+          // Esconder todos os conteúdos de modal
+          document.querySelectorAll('#detalhes-modal .modal-content').forEach(content => {
+            content.style.display = 'none';
+          });
+          
+          // Mostrar o conteúdo específico para este município
+          const modalContent = document.getElementById(`modal-content-${municipioId}`);
+          if (modalContent) {
+            modalContent.style.display = 'block';
+            
+            // Atualizar os dados do modal
+            const municipio = dadosMunicipios[municipioId];
+            if (municipio) {
+              // Atualizar nível atual
+              const nivelEl = document.getElementById(`modal-nivel-${municipioId}`);
+              if (nivelEl) nivelEl.textContent = `${municipio.nivelAtual.toFixed(2)}m`;
+              
+              // Atualizar tendência
+              const tendenciaEl = document.getElementById(`modal-tendencia-${municipioId}`);
+              if (tendenciaEl) {
+                let icone, classe;
+                switch(municipio.tendencia) {
+                  case 'subindo':
+                    icone = 'fa-arrow-up';
+                    classe = 'text-danger';
+                    break;
+                  case 'descendo':
+                    icone = 'fa-arrow-down';
+                    classe = 'text-success';
+                    break;
+                  default:
+                    icone = 'fa-arrows-alt-h';
+                    classe = 'text-warning';
+                }
+                tendenciaEl.innerHTML = `<i class="fas ${icone} ${classe}"></i> ${municipio.tendencia.charAt(0).toUpperCase() + municipio.tendencia.slice(1)}`;
+              }
+              
+              // Atualizar variação
+              const variacaoEl = document.getElementById(`modal-variacao-${municipioId}`);
+              if (variacaoEl) {
+                const sinal = municipio.variacao24h > 0 ? '+' : '';
+                variacaoEl.textContent = `${sinal}${municipio.variacao24h.toFixed(2)}m`;
+              }
+              
+              // Atualizar níveis de alerta e inundação
+              const alertaEl = document.getElementById(`modal-alerta-${municipioId}`);
+              if (alertaEl) alertaEl.textContent = `${municipio.nivelAlerta.toFixed(2)}m`;
+              
+              const inundacaoEl = document.getElementById(`modal-inundacao-${municipioId}`);
+              if (inundacaoEl) inundacaoEl.textContent = `${municipio.nivelInundacao.toFixed(2)}m`;
+              
+              // Atualizar data de atualização
+              const atualizacaoEl = document.getElementById(`modal-atualizacao-${municipioId}`);
+              if (atualizacaoEl) atualizacaoEl.textContent = formatarData(municipio.atualizadoEm);
+              
+              // Atualizar contatos
+              const defesaCivilEl = document.getElementById(`modal-defesa-civil-${municipioId}`);
+              if (defesaCivilEl) defesaCivilEl.textContent = municipio.contatoDefesaCivil;
+              
+              const bombeirosEl = document.getElementById(`modal-bombeiros-${municipioId}`);
+              if (bombeirosEl) bombeirosEl.textContent = municipio.contatoBombeiros;
+              
+              // Atualizar classe de risco
+              const riscoEl = document.getElementById(`modal-risco-${municipioId}`);
+              if (riscoEl) {
+                let classe, icone, texto;
+                switch(municipio.risco) {
+                  case 'alto':
+                    classe = 'bg-danger';
+                    icone = 'exclamation-triangle';
+                    texto = 'Alto';
+                    break;
+                  case 'medio':
+                    classe = 'bg-warning';
+                    icone = 'exclamation-circle';
+                    texto = 'Médio';
+                    break;
+                  default:
+                    classe = 'bg-success';
+                    icone = 'check-circle';
+                    texto = 'Baixo';
+                }
+                riscoEl.className = `badge ${classe} ms-2`;
+                riscoEl.innerHTML = `<i class="fas fa-${icone} me-1"></i> Risco ${texto}`;
+              }
+            }
+          }
+          
+          // Mostrar o modal
+          const modal = new bootstrap.Modal(document.getElementById('detalhes-modal'));
+          modal.show();
+        }
+        
+        // Função para fechar o modal
+        function fecharModal() {
+          const modal = bootstrap.Modal.getInstance(document.getElementById('detalhes-modal'));
+          if (modal) modal.hide();
         }
     </script>
     
