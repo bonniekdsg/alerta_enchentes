@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Monitoramento de Enchentes - Acre</title>
+    <link rel="icon" href="https://static.wixstatic.com/ficons/c96204_e567a922c44e440f8589c59322f43502~mv2.ico" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -200,6 +201,218 @@
             color: var(--success-color);
             font-weight: 600;
         }
+
+        /* Estilos refinados para cards de municípios */
+.municipio-card {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  height: 100%;
+  background: white;
+  position: relative;
+  border: none;
+  transition: all 0.3s ease-out;
+}
+
+
+
+.municipio-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Ajustar o cabeçalho para alinhar o título à esquerda */
+.municipio-card .card-header {
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.2rem;
+  border-bottom: none;
+  justify-content: space-between; /* Usar space-between para ítens nas extremidades */
+}
+
+/* Contêiner para o ícone de localização e o nome do município */
+.municipio-card .location-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Estilo para o ícone de localização */
+.municipio-card .card-header .fa-map-marker-alt {
+  margin-right: 10px;
+}
+
+/* Ajuste para centralizar perfeitamente o ícone de sino */
+.alert-bell-icon {
+  position: relative;
+  font-size: 1.25rem;
+  color: #fff;
+  background-color: rgba(220, 53, 69, 0.95); /* Vermelho um pouco mais intenso */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 2;
+  animation: bellPulse 2s infinite;
+}
+
+/* Ajuste específico para o ícone dentro do círculo */
+.alert-bell-icon i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0; /* Remover qualquer margem */
+  padding: 0; /* Remover qualquer padding */
+  line-height: 1; /* Importante para centralização vertical */
+  position: absolute;
+  top: 0; /* Pequeno ajuste se necessário */
+  left: 0; /* Pequeno ajuste se necessário */
+}
+
+.municipio-card .card-header i {
+  margin-right: 10px;
+}
+
+/* Corpo do card */
+.municipio-card .card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Nome do rio e badge de risco */
+.municipio-card .rio-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.municipio-card .rio-nome {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Badges de risco */
+.risco-badge {
+  padding: 5px 18px;
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: #fff;
+  display: inline-block;
+}
+
+.risco-badge.alto {
+  background-color: #dc3545;
+}
+
+.risco-badge.medio {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.risco-badge.normal {
+  background-color: #28a745;
+}
+
+/* Nível atual (valor principal) */
+.municipio-card .nivel-valor {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Tendência e variação */
+.municipio-card .nivel-tendencia {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.municipio-card .tendencia {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.municipio-card .tendencia i {
+  margin-right: 5px;
+}
+
+.municipio-card .tendencia.subindo {
+  color: #dc3545;
+}
+
+.municipio-card .tendencia.descendo {
+  color: #28a745;
+}
+
+.municipio-card .tendencia.estavel {
+  color: #6c757d;
+}
+
+.municipio-card .variacao {
+  color: #666;
+  text-align: right;
+  font-size: 0.95rem;
+}
+
+/* Rodapé com data de atualização */
+.municipio-card .card-footer {
+  padding: 15px 20px;
+  background-color: #fff;
+  border-top: 1px solid #f0f0f0;
+  color: #666;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.municipio-card .card-footer i {
+  margin-right: 8px;
+}
+
+/* Cores de cabeçalho por risco */
+.card-header-alto {
+  background-color: #dc3545;
+}
+
+.card-header-medio {
+  background-color: #ffc107;
+}
+
+.card-header-baixo,
+.card-header-normal {
+  background-color: #28a745;
+}
+
+/* Indicador de alerta */
+.alerta-indicador {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  background-color: #dc3545;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+  z-index: 2;
+}
+
+        
         
         .municipio-card {
             cursor: pointer;
@@ -249,13 +462,30 @@
             background-color: rgba(40, 167, 69, 0.05);
         }
         
-        .badge-alerta {
-            font-size: 0.75rem;
-            padding: 0.35em 0.65em;
-            font-weight: 600;
-            text-transform: uppercase;
-            border-radius: 50px;
-        }
+        /* Estilização do badge de alerta no modal */
+.badge-alerta {
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+  font-weight: 600;
+  text-transform: uppercase;
+  border-radius: 50px;
+  }
+
+/* Cores específicas para cada nível de alerta */
+.badge-alerta.bg-danger {
+  background-color: #dc3545;
+  color: white !important;
+}
+
+.badge-alerta.bg-warning {
+  background-color: #ffc107;
+  color: #212529; /* Este pode permanecer escuro para melhor legibilidade */
+}
+
+.badge-alerta.bg-success {
+  background-color: #28a745;
+  color: white !important;
+}
         
         footer {
             background-color: var(--dark-color);
@@ -732,26 +962,112 @@
         .dark-mode .dropdown-divider {
             border-color: #333;
         }
+
+        /* Estilo para o ícone de sino animado em cards com alerta */
+.alert-bell-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.25rem;
+  color: #fff;
+  background-color: rgba(220, 53, 69, 0.85);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  animation: bellPulse 2s infinite;
+}
+
+/* Animação de pulsação para o sino */
+@keyframes bellPulse {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.1);
+  }
+  20% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.1);
+  }
+  40% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Remover o indicador de alerta antigo se necessário */
+.alerta-indicador {
+  display: none;
+}
+
+/* Estilo para o ícone do MPAC */
+.mpac-logo {
+  height: 20px;
+  width: auto;
+  transition: all 0.3s ease;
+}
+
+.mpac-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.mpac-icon:hover .mpac-logo {
+  content: url('https://static.wixstatic.com/media/c96204_14ad95c6a55e4d839ed6abcf48deafde~mv2.png');
+}
+
+/* Estilo para o ícone do Instagram */
+.instagram-logo {
+  height: 20px;
+  width: auto;
+  transition: all 0.3s ease;
+}
+
+.instagram-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.instagram-icon:hover .instagram-logo {
+  content: url('https://static.wixstatic.com/media/c96204_8f5d9c11bb68466eb64dca4e43f79834~mv2.png');
+}
     </style>
 </head>
 <body>
     <!-- Skip to content link for accessibility -->
     <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
     
-    <!-- Cabeçalho -->
-    <header class="header" role="banner">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <img src="https://static.wixstatic.com/media/c96204_fecf1c65eaf64f22b97b4d31736b208c~mv2.png" alt="Radar de Enchentes MPAC" class="img-fluid" style="max-height: 120px;">
+    <!-- Cabeçalho com ambas as logos -->
+<header class="header" role="banner">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <!-- Logo original do Radar de Enchentes MPAC (lado esquerdo) -->
+            <div>
+                <img src="https://static.wixstatic.com/media/c96204_fecf1c65eaf64f22b97b4d31736b208c~mv2.png" alt="Radar de Enchentes MPAC" class="img-fluid" style="max-height: 120px;">
             </div>
-                <div class="text-end d-none d-md-block">
-                    <p class="mb-0"><i class="fas fa-sync-alt me-1" aria-hidden="true"></i>Atualizado:<span id="ultima-atualizacao">13/03/2025 10:30</span></p>
-                    <p class="mb-0"><small>Fonte: Defesa Civil</small></p>
-                </div>
+            
+            <!-- Nova logo substituindo as informações de atualização (lado direito) -->
+            <div class="text-end d-none d-md-block">
+                <img src="https://static.wixstatic.com/media/c96204_6a99e04abb104b29a5fdafcaec0aeffb~mv2.png" alt="Logo Secundária" class="img-fluid" style="max-height: 110px;">
             </div>
         </div>
-    </header>
+    </div>
+</header>
     
     <!-- Menu de navegação -->
     <nav class="navbar navbar-expand-lg sticky-top" aria-label="Menu principal">
@@ -762,18 +1078,18 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#dashboard" data-bs-toggle="tab" role="tab" aria-selected="true">Dashboard</a>
+                        <a class="nav-link active" href="#dashboard" data-bs-toggle="tab" role="tab" aria-selected="true" aria-current="page">Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="Atuacao.html">Atuação</a>
                     </li>
                 </ul>
                 <div class="ms-auto d-flex align-items-center">
-                    <a href="https://www.instagram.com/mpacre/" target="_blank" class="btn btn-sm btn-outline-secondary me-2" title="Instagram do MPAC">
-                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    <a href="https://www.instagram.com/mpacre/" target="_blank" class="btn btn-sm btn-outline-secondary me-2 instagram-icon" title="Instagram do MPAC">
+                        <img src="https://static.wixstatic.com/media/c96204_35e7835a480d49f29359e3246344af2d~mv2.png" alt="Instagram do MPAC" class="instagram-logo">
                     </a>
-                    <a href="https://www.mpac.mp.br/" target="_blank" class="btn btn-sm btn-outline-secondary me-2" title="Site do MPAC">
-                        <i class="fas fa-globe" aria-hidden="true"></i>
+                    <a href="https://www.mpac.mp.br/" target="_blank" class="btn btn-sm btn-outline-secondary me-2 mpac-icon" title="Site do MPAC">
+                        <img src="https://static.wixstatic.com/media/c96204_196f832d97854a339360f23efd193930~mv2.png" alt="Site do MPAC" class="mpac-logo">
                     </a>
                     <div class="dropdown">
                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -784,8 +1100,8 @@
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="#" id="toggle-dark-mode">Alternar tema</a></li>
                         </ul>
-            </div>
-        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -802,32 +1118,32 @@
                             <div class="stats-card primary">
                                 <div class="stat-icon" aria-hidden="true">
                                     <i class="fas fa-map-marker-alt"></i>
-                    </div>
+                                </div>
                                 <div class="stat-value">22</div>
                                 <div class="stat-label">Municípios monitorados</div>
-                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
                     <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                         <div class="card h-100">
                             <div class="stats-card warning">
                                 <div class="stat-icon" aria-hidden="true">
                                     <i class="fas fa-exclamation-triangle"></i>
-                    </div>
+                                </div>
                                 <div class="stat-value">4</div>
                                 <div class="stat-label">Municípios em alerta</div>
-                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
                     <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
                         <div class="card h-100">
                             <div class="stats-card danger">
                                 <div class="stat-icon" aria-hidden="true">
                                     <i class="fas fa-exclamation-circle"></i>
-            </div>
+                                </div>
                                 <div class="stat-value">2</div>
                                 <div class="stat-label">Municípios em risco alto</div>
-        </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3 col-sm-6">
@@ -848,19 +1164,19 @@
                     <div class="d-flex">
                         <div class="me-3">
                             <i class="fas fa-exclamation-triangle fa-2x" aria-hidden="true"></i>
-                            </div>
+                        </div>
                         <div>
                             <h4 class="alert-heading">Alerta de chuvas intensas</h4>
                             <p>Previsão de chuvas intensas nos próximos dias. Fique atento aos alertas da Defesa Civil e prepare-se para possíveis variações nos níveis dos rios.</p>
-                            </div>
+                        </div>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-                            </div>
+                </div>
                 
                 <!-- Contenedor de alertas dinâmicos -->
                 <div id="alertas-container">
                     <!-- Os alertas serão carregados dinamicamente do JSON -->
-                            </div>
+                </div>
 
                 <!-- Lista de municípios -->
                 <h2 class="mb-3">Municípios Monitorados <small class="text-muted fs-6">Clique no card para mais detalhes</small></h2>
@@ -873,7 +1189,7 @@
                                 <div class="search-container">
                                     <i class="fas fa-search" aria-hidden="true"></i>
                                     <input type="text" id="municipio-busca" class="form-control" placeholder="Buscar município..." aria-label="Buscar município">
-                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">                
                                 <div class="d-flex flex-wrap gap-2 mb-3">
@@ -885,11 +1201,11 @@
                                         <i class="fas fa-bell me-1" aria-hidden="true"></i> Com Alertas
                                         <span class="alerta-contador badge rounded-pill bg-danger ms-1">0</span>
                                     </button>
+                                </div>
                             </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
                 
                 <div class="row g-3" id="lista-municipios">
                     <!-- Os cards dos municípios serão carregados aqui -->
@@ -994,7 +1310,7 @@
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h5 class="text-white mb-3">Sistema de Monitoramento de Enchentes</h5>
                     <p class="text-white fw-normal" style="max-width: 300px; font-weight: 400 !important; font-size: 0.90rem !important;">Sistema de monitoramento e alerta para enchentes no estado do Acre.</p>
-                    </div>
+                </div>
                 <div class="col-lg-2 col-md-4 col-6 mb-4 mb-md-0">
                     <h5 class="text-white mb-3">Links</h5>
                     <ul class="list-unstyled">
@@ -1025,12 +1341,12 @@
                         </a>
                     </div>
                 </div>
-                </div>
+            </div>
             <div class="border-top border-secondary pt-4 mt-4">
                 <div class="row">
                     <div class="col-12 text-center">
-                        <p class="text-white fw-normal mb-0" style="font-weight: 400 !important; font-size: 0.85rem !important;">&copy; 2025 Desenvolvido por Seringal Lab - Laboratório de Inovação - Todos os direitos reservados.</p>
-                </div>
+                        <p class="text-white fw-normal mb-0" style="font-weight: 400 !important; font-size: 0.85rem !important;">© 2025 Desenvolvido por Seringal Lab - Laboratório de Inovação - Todos os direitos reservados.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1087,7 +1403,7 @@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <h5 class="mb-3">Histórico das Últimas 24h</h5>
-                                <div class="chart-container">
+                                <div class="chart-container" style="position: relative; height: 250px;">
                                     <canvas id="historicoChart"></canvas>
                                 </div>
                             </div>
@@ -1120,439 +1436,7 @@
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="app.js"></script>
-    <script>
-        // Dados dos municípios para preencher o modal
-        const dadosMunicipios = {
-            'rio-branco': {
-                nome: 'Rio Branco',
-                rio: 'Rio Acre',
-                nivelAtual: 15.17,
-                nivelAlerta: 13.5,
-                nivelInundacao: 14.5,
-                variacao24h: '+0.21',
-                tendencia: 'subindo',
-                status: 'Crítico',
-                statusClass: 'bg-danger',
-                atualizacao: 'há 30 minutos',
-                defesaCivil: '(68) 3223-1177',
-                bombeiros: '(68) 3223-1110',
-                historicoNiveis: [14.5, 14.7, 14.9, 15.0, 15.1, 15.15, 15.17],
-                alertas: []
-            },
-            'cruzeiro-do-sul': {
-                nome: 'Cruzeiro do Sul',
-                rio: 'Rio Juruá',
-                nivelAtual: 12.30,
-                nivelAlerta: 13.00,
-                nivelInundacao: 14.00,
-                variacao24h: '+0.20',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 30 minutos',
-                defesaCivil: '(68) 3322-4208',
-                bombeiros: '(68) 3322-1866',
-                historicoNiveis: [11.9, 12.0, 12.1, 12.1, 12.2, 12.25, 12.3],
-                alertas: []
-            },
-            'tarauaca': {
-                nome: 'Tarauacá',
-                rio: 'Rio Tarauacá',
-                nivelAtual: 8.50,
-                nivelAlerta: 12.00,
-                nivelInundacao: 13.00,
-                variacao24h: '-0.10',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 45 minutos',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [8.7, 8.65, 8.62, 8.58, 8.55, 8.52, 8.5],
-                alertas: []
-            },
-            'feijo': {
-                nome: 'Feijó',
-                rio: 'Rio Envira',
-                nivelAtual: 10.20,
-                nivelAlerta: 11.50,
-                nivelInundacao: 12.50,
-                variacao24h: '+0.15',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [9.8, 9.9, 10.0, 10.1, 10.15, 10.18, 10.2],
-                alertas: []
-            },
-            'aldeia-dos-patos': {
-                nome: 'Aldeia dos Patos',
-                rio: 'Rio Purus',
-                nivelAtual: 7.80,
-                nivelAlerta: 11.00,
-                nivelInundacao: 12.00,
-                variacao24h: '-0.05',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [7.7, 7.75, 7.78, 7.8, 7.82, 7.85, 7.88],
-                alertas: []
-            },
-            'assis-brasil': {
-                nome: 'Assis Brasil',
-                rio: 'Rio Acre',
-                nivelAtual: 6.40,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '-0.10',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 1 hora',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3463-2614',
-                historicoNiveis: [6.5, 6.55, 6.58, 6.6, 6.62, 6.65, 6.68],
-                alertas: []
-            },
-            'brasileia': {
-                nome: 'Brasiléia',
-                rio: 'Rio Acre',
-                nivelAtual: 9.80,
-                nivelAlerta: 11.00,
-                nivelInundacao: 12.00,
-                variacao24h: '+0.20',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 45 minutos',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [9.6, 9.7, 9.75, 9.78, 9.8, 9.82, 9.85],
-                alertas: []
-            },
-            'xapuri-dolores': {
-                nome: 'Xapuri C. Dolores',
-                rio: 'Rio Xapuri',
-                nivelAtual: 6.90,
-                nivelAlerta: 10.00,
-                nivelInundacao: 11.00,
-                variacao24h: '-0.05',
-                tendencia: 'estavel',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 3 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [6.8, 6.85, 6.88, 6.9, 6.92, 6.95, 6.98],
-                alertas: []
-            },
-            'xapuri': {
-                nome: 'Xapuri',
-                rio: 'Rio Acre',
-                nivelAtual: 9.20,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '+0.15',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [9.0, 9.1, 9.15, 9.18, 9.2, 9.22, 9.25],
-                alertas: []
-            },
-            'capixaba': {
-                nome: 'Capixaba',
-                rio: 'Rio Abunã',
-                nivelAtual: 7.20,
-                nivelAlerta: 10.00,
-                nivelInundacao: 11.00,
-                variacao24h: '-0.05',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 4 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [7.1, 7.05, 7.02, 7.0, 7.0, 7.0, 7.0],
-                alertas: []
-            },
-            'espalha': {
-                nome: 'Espalha',
-                rio: 'Rio Iaco',
-                nivelAtual: 6.80,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '-0.05',
-                tendencia: 'estavel',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 3 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [6.7, 6.75, 6.78, 6.8, 6.82, 6.85, 6.88],
-                alertas: []
-            },
-            'riozinho-do-rola': {
-                nome: 'Riozinho do Rola',
-                rio: 'Riozinho do Rola',
-                nivelAtual: 8.90,
-                nivelAlerta: 9.50,
-                nivelInundacao: 10.50,
-                variacao24h: '+0.25',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 1 hora',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [8.6, 8.65, 8.7, 8.75, 8.8, 8.85, 8.9],
-                alertas: []
-            },
-            'porto-acre': {
-                nome: 'Porto Acre',
-                rio: 'Rio Acre',
-                nivelAtual: 13.80,
-                nivelAlerta: 13.00,
-                nivelInundacao: 14.00,
-                variacao24h: '+0.30',
-                tendencia: 'subindo',
-                status: 'Crítico',
-                statusClass: 'bg-danger',
-                atualizacao: 'há 30 minutos',
-                defesaCivil: '(68) 3223-1177',
-                bombeiros: '(68) 3211-1110',
-                historicoNiveis: [13.5, 13.6, 13.65, 13.7, 13.75, 13.78, 13.8],
-                alertas: []
-            },
-            'jordao': {
-                nome: 'Jordão',
-                rio: 'Rio Jordão',
-                nivelAtual: 9.10,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '+0.15',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3463-2614',
-                historicoNiveis: [9.0, 9.1, 9.15, 9.18, 9.2, 9.22, 9.25],
-                alertas: []
-            },
-            'seringal-santa-helena': {
-                nome: 'Seringal Santa Helena',
-                rio: 'Rio Purus',
-                nivelAtual: 7.50,
-                nivelAlerta: 10.00,
-                nivelInundacao: 11.00,
-                variacao24h: '-0.10',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 5 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [7.4, 7.45, 7.48, 7.5, 7.52, 7.55, 7.58],
-                alertas: []
-            },
-            'mancio-lima': {
-                nome: 'Mâncio Lima',
-                rio: 'Rio Moa',
-                nivelAtual: 6.90,
-                nivelAlerta: 10.50,
-                nivelInundacao: 11.50,
-                variacao24h: '-0.05',
-                tendencia: 'estavel',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 3 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [6.8, 6.85, 6.88, 6.9, 6.92, 6.95, 6.98],
-                alertas: []
-            },
-            'ponte-do-liberdade': {
-                nome: 'Ponte do Liberdade',
-                rio: 'Rio Liberdade',
-                nivelAtual: 7.30,
-                nivelAlerta: 10.00,
-                nivelInundacao: 11.00,
-                variacao24h: '-0.05',
-                tendencia: 'descendo',
-                status: 'Normal',
-                statusClass: 'bg-success',
-                atualizacao: 'há 2 horas',
-                defesaCivil: '(68) 3462-1311',
-                bombeiros: '(68) 3462-2475',
-                historicoNiveis: [7.2, 7.25, 7.28, 7.3, 7.32, 7.35, 7.38],
-                alertas: []
-            },
-            'porto-walter': {
-                nome: 'Porto Walter',
-                rio: 'Rio Juruá',
-                nivelAtual: 10.20,
-                nivelAlerta: 11.00,
-                nivelInundacao: 12.00,
-                variacao24h: '+0.15',
-                tendencia: 'subindo',
-                status: 'Alerta',
-                statusClass: 'bg-warning',
-                atualizacao: 'há 1 hora',
-                defesaCivil: '(68) 3463-2614',
-                bombeiros: '(68) 3463-2872',
-                historicoNiveis: [10.0, 10.1, 10.15, 10.18, 10.2, 10.22, 10.25],
-                alertas: []
-            },
-            'marechal-thaumaturgo': {
-                nome: 'Marechal Thaumaturgo',
-                rio: 'Rio Juruá',
-                nivelAtual: 12.80,
-                nivelAlerta: 12.00,
-                nivelInundacao: 13.00,
-                variacao24h: '+0.25',
-                tendencia: 'subindo',
-                status: 'Crítico',
-                statusClass: 'bg-danger',
-                atualizacao: 'há 45 minutos',
-                defesaCivil: '(68) 3223-1177',
-                bombeiros: '(68) 3211-1110',
-                historicoNiveis: [12.5, 12.55, 12.6, 12.65, 12.7, 12.75, 12.8],
-                alertas: []
-            }
-        };
-        
-        // Variável para armazenar a instância do gráfico
-        let historicoChart;
-        
-        // Função para abrir modal com detalhes do município
-        function abrirModal(municipioId) {
-            if (!dadosMunicipios[municipioId]) {
-                console.error(`Município ${municipioId} não encontrado nos dados.`);
-                return;
-            }
-            
-            const municipio = dadosMunicipios[municipioId];
-            
-            // Preencher os dados no modal
-            document.getElementById('municipioModalLabel').textContent = municipio.nome;
-            document.getElementById('modal-rio').textContent = municipio.rio;
-            document.getElementById('modal-nivel').textContent = `${municipio.nivelAtual}m`;
-            
-            const tendenciaIcon = municipio.tendencia === 'subindo' ? 
-                '<i class="fas fa-arrow-up text-danger me-1"></i>' : 
-                '<i class="fas fa-arrow-down text-success me-1"></i>';
-            
-            document.getElementById('modal-tendencia').innerHTML = `${tendenciaIcon} ${municipio.variacao24h}m (24h)`;
-            
-            document.getElementById('modal-status').innerHTML = 
-                `<span class="badge ${municipio.statusClass}">${municipio.status}</span>`;
-            
-            document.getElementById('modal-atualizacao').textContent = municipio.atualizacao;
-            document.getElementById('modal-nivel-alerta').textContent = `${municipio.nivelAlerta}m`;
-            document.getElementById('modal-nivel-inundacao').textContent = `${municipio.nivelInundacao}m`;
-            document.getElementById('modal-defesa-civil').textContent = municipio.defesaCivil;
-            document.getElementById('modal-bombeiros').textContent = municipio.bombeiros;
-            
-            // Carregar alertas específicos para este município
-            carregarAlertas(null, municipioId);
-            
-            // Renderizar o gráfico de histórico
-            if (historicoChart) {
-                historicoChart.destroy();
-            }
-            
-            const ctx = document.getElementById('historicoChart').getContext('2d');
-            historicoChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['6h', '9h', '12h', '15h', '18h', '21h', 'Agora'],
-                    datasets: [{
-                        label: 'Nível do Rio (m)',
-                        data: municipio.historicoNiveis,
-                        borderColor: '#0088cc',
-                        backgroundColor: 'rgba(0, 136, 204, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: {
-                                display: true,
-                                text: 'Metros'
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Abrir o modal
-            const municipioModal = new bootstrap.Modal(document.getElementById('municipioModal'));
-            municipioModal.show();
-        }
-        
-        // Inicializar tooltips do Bootstrap
-        document.addEventListener('DOMContentLoaded', function() {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-            
-            // Nota: A configuração dos botões de filtro foi movida para app.js
-            // para evitar duplicação e conflitos
-            
-            // Campo de busca - também movido para app.js
-        });
-        
-        // // Função para processar alertas e associá-los aos municípios correspondentes
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     // Outras inicializações...
-            
-        //     // Adicionar ícones de alerta nos cards dos municípios que têm alertas
-        //     atualizarIconesAlerta();
-        // });
-        
-        // Função para atualizar os ícones de alerta nos cards dos municípios
-        function atualizarIconesAlerta() {
-            if (typeof dadosMunicipios === 'undefined') return;
-            
-            for (const [municipioId, municipio] of Object.entries(dadosMunicipios)) {
-                if (municipio.alertas && municipio.alertas.length > 0) {
-                    const cardElement = document.querySelector(`.municipio-card[data-id="${municipioId}"]`);
-                    if (cardElement) {
-                        // Verificar se o ícone já existe para evitar duplicação
-                        if (!cardElement.querySelector('.alerta-card-icon')) {
-                            const alertIcon = document.createElement('div');
-                            alertIcon.className = 'alerta-card-icon';
-                            alertIcon.innerHTML = '<i class="fas fa-bell"></i>';
-                            alertIcon.title = `${municipio.alertas.length} alerta(s) ativo(s)`;
-                            cardElement.appendChild(alertIcon);
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <!-- Script para corrigir a navegação entre abas -->
+    <script src="app.js?v=1.0.1"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Corrigir navegação entre abas
@@ -1566,11 +1450,13 @@
                     document.querySelectorAll('.nav-link').forEach(tab => {
                         tab.classList.remove('active');
                         tab.setAttribute('aria-selected', 'false');
+                        tab.removeAttribute('aria-current');
                     });
                     
                     // Adicionar classe active à aba clicada
                     this.classList.add('active');
                     this.setAttribute('aria-selected', 'true');
+                    this.setAttribute('aria-current', 'page');
                     
                     // Esconder todos os painéis de conteúdo
                     document.querySelectorAll('.tab-pane').forEach(pane => {
