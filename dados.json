@@ -352,27 +352,10 @@
   },
   "alertas": [
     {
-      "id": "alerta-001",
-      "municipioId": "rio-branco",
-      "titulo": "ALERTA - Rio Branco",
-      "nivel": "alto",
-      "descricao": "O nível do Rio Acre em Rio Branco atingiu 15,80 m, ultrapassando tanto o nível de alerta (13,50 m) quanto o nível de inundação (14,00 m).",
-      "emitidoEm": "2025-03-18T06:00:00",
-      "instrucoes": [
-        "Moradores de áreas de risco devem ficar atentos",
-        "Mantenha documentos e objetos de valor em locais seguros",
-        "Evite áreas próximas às margens do rio",
-        "Siga as orientações da Defesa Civil"
-      ],
-      "abrigos": [
-        "Parque de Exposições"
-      ]
-    },
-    {
       "id": "alerta-1742422383473",
       "municipioId": "rio-branco",
       "titulo": "ALERTA - Rio Branco",
-      "nivel": "baixo",
+      "nivel": "alto",
       "descricao": "O nível do Rio Acre em Rio Branco atingiu 15,28 m, ultrapassando tanto o nível de alerta (13,50 m) quanto o nível de inundação (14,00 m).",
       "instrucoes": [
         "Moradores de áreas de risco devem ficar atentos",
@@ -383,7 +366,7 @@
       "abrigos": [
         "Parque de Exposições"
       ],
-      "emitidoEm": "2025-03-19T22:13:03.473Z"
+      "emitidoEm": "2025-03-19T15:00:00"
     }
   ]
 }
