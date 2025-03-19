@@ -37,18 +37,24 @@
     "cruzeiro-do-sul": {
       "nome": "Cruzeiro do Sul",
       "rio": "Juruá",
-      "nivelAtual": 13.62,
+      "nivelAtual": 13.7,
       "nivelAlerta": 11.8,
       "nivelInundacao": 13,
-      "variacao24h": 0.4,
+      "variacao24h": 0.12,
       "tendencia": "subindo",
       "risco": "alto",
-      "atualizadoEm": "2025-03-13T06:00:00",
+      "atualizadoEm": "2025-03-19T06:00:00",
       "latitude": -7.6272,
       "longitude": -72.6762,
       "contatoDefesaCivil": "(68) 3322-2169",
       "contatoBombeiros": "193",
       "historico": [
+        {
+          "id": "medicao-1742425366972",
+          "data": "2025-03-19T06:00:00",
+          "nivel": 13.7,
+          "tendencia": "subindo"
+        },
         {
           "data": "2025-03-17T18:00:00",
           "nivel": 13.58
