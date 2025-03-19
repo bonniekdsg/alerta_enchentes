@@ -1,27 +1,21 @@
 {
-  "ultimaAtualizacao": "2025/03/19 18:49:28",
+  "ultimaAtualizacao": "2025-03-19T15:00:00",
   "municipios": {
     "rio-branco": {
       "nome": "Rio Branco",
       "rio": "Acre",
-      "nivelAtual": 15.65,
+      "nivelAtual": 15.28,
       "nivelAlerta": 13.5,
       "nivelInundacao": 14,
-      "variacao24h": 0.37,
-      "tendencia": "subindo",
+      "variacao24h": -0.52,
+      "tendencia": "descendo",
       "risco": "alto",
-      "atualizadoEm": "2025/03/19 18:00",
+      "atualizadoEm": "2025-03-19T15:00:00.00",
       "latitude": -9.9753,
       "longitude": -67.8249,
       "contatoDefesaCivil": "(68) 99985-2018",
       "contatoBombeiros": "193",
       "historico": [
-        {
-          "id": "medicao-1742428121633",
-          "data": "2025/03/19 18:00",
-          "nivel": 15.65,
-          "tendencia": "subindo"
-        },
         {
           "id": "medicao-1742422379670",
           "data": "2025-03-19T15:00:00.00",
@@ -36,30 +30,34 @@
         },
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 14.99,
-          "id": "medicao-rio-branco-1742427937109-2"
+          "nivel": 14.99
         }
       ]
     },
     "cruzeiro-do-sul": {
       "nome": "Cruzeiro do Sul",
       "rio": "Juruá",
-      "nivelAtual": 13.62,
+      "nivelAtual": 13.7,
       "nivelAlerta": 11.8,
       "nivelInundacao": 13,
-      "variacao24h": 0.4,
+      "variacao24h": 0.12,
       "tendencia": "subindo",
       "risco": "alto",
-      "atualizadoEm": "2025-03-13T06:00:00",
+      "atualizadoEm": "2025-03-19T06:00:00",
       "latitude": -7.6272,
       "longitude": -72.6762,
       "contatoDefesaCivil": "(68) 3322-2169",
       "contatoBombeiros": "193",
       "historico": [
         {
+          "id": "medicao-1742425366972",
+          "data": "2025-03-19T06:00:00",
+          "nivel": 13.7,
+          "tendencia": "subindo"
+        },
+        {
           "data": "2025-03-17T18:00:00",
-          "nivel": 13.58,
-          "id": "medicao-cruzeiro-do-sul-1742427937109-0"
+          "nivel": 13.58
         }
       ]
     },
@@ -80,8 +78,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 10.71,
-          "id": "medicao-tarauaca-1742427937109-0"
+          "nivel": 10.71
         }
       ]
     },
@@ -102,8 +99,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 11.68,
-          "id": "medicao-feijo-1742427937109-0"
+          "nivel": 11.68
         }
       ]
     },
@@ -124,8 +120,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:30:00",
-          "nivel": 6.28,
-          "id": "medicao-aldeia-dos-patos-1742427937109-0"
+          "nivel": 6.28
         }
       ]
     },
@@ -146,8 +141,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 5.49,
-          "id": "medicao-assis-brasil-1742427937109-0"
+          "nivel": 5.49
         }
       ]
     },
@@ -168,8 +162,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 6.53,
-          "id": "medicao-brasileia-1742427937109-0"
+          "nivel": 6.53
         }
       ]
     },
@@ -190,8 +183,7 @@
       "historico": [
         {
           "data": "2025-03-13T11:00:00",
-          "nivel": 7.47,
-          "id": "medicao-xapuri-dolores-1742427937109-0"
+          "nivel": 7.47
         }
       ]
     },
@@ -212,8 +204,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 10.1,
-          "id": "medicao-xapuri-1742427937109-0"
+          "nivel": 10.1
         }
       ]
     },
@@ -234,8 +225,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 11.87,
-          "id": "medicao-capixaba-1742427937109-0"
+          "nivel": 11.87
         }
       ]
     },
@@ -256,8 +246,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 10.1,
-          "id": "medicao-espalha-1742427937109-0"
+          "nivel": 10.1
         }
       ]
     },
@@ -278,8 +267,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 16.84,
-          "id": "medicao-riozinho-do-rola-1742427937109-0"
+          "nivel": 16.84
         }
       ]
     },
@@ -300,8 +288,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 13.73,
-          "id": "medicao-porto-acre-1742427937109-0"
+          "nivel": 13.73
         }
       ]
     },
@@ -322,8 +309,7 @@
       "historico": [
         {
           "data": "2025-03-17T18:00:00",
-          "nivel": 8.95,
-          "id": "medicao-jordao-1742427937109-0"
+          "nivel": 8.95
         }
       ]
     },
@@ -344,8 +330,7 @@
       "historico": [
         {
           "data": "2025-03-13T13:00:00",
-          "nivel": 9.92,
-          "id": "medicao-porto-walter-1742427937109-0"
+          "nivel": 9.92
         }
       ]
     },
@@ -366,8 +351,7 @@
       "historico": [
         {
           "data": "2025-03-18T18:00:00",
-          "nivel": 11.71,
-          "id": "medicao-marechal-thaumaturgo-1742427937109-0"
+          "nivel": 11.71
         }
       ]
     }
