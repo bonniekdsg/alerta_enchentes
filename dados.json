@@ -1,49 +1,66 @@
 {
-  "ultimaAtualizacao": "2025-03-18T06:00:00",
+  "ultimaAtualizacao": "2025-03-19T15:00:00",
   "municipios": {
     "rio-branco": {
       "nome": "Rio Branco",
       "rio": "Acre",
-      "nivelAtual": 15.80,
+      "nivelAtual": 15.28,
       "nivelAlerta": 13.5,
-      "nivelInundacao": 14.0,
-      "variacao24h": -0.08,
+      "nivelInundacao": 14,
+      "variacao24h": -0.52,
       "tendencia": "descendo",
       "risco": "alto",
-      "atualizadoEm": "2025-03-18T06:00:00",
+      "atualizadoEm": "2025-03-19T15:00:00.00",
       "latitude": -9.9753,
       "longitude": -67.8249,
       "contatoDefesaCivil": "(68) 99985-2018",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-16T14:08:13", "nivel": 14.99}
-       
+        {
+          "id": "medicao-1742422379670",
+          "data": "2025-03-19T15:00:00.00",
+          "nivel": 15.28,
+          "tendencia": "descendo"
+        },
+        {
+          "id": "medicao-1742422089401",
+          "data": "2025-03-18T06:00",
+          "nivel": 15.8,
+          "tendencia": "descendo"
+        },
+        {
+          "data": "2025-03-16T14:08:13",
+          "nivel": 14.99
+        }
       ]
     },
     "cruzeiro-do-sul": {
       "nome": "Cruzeiro do Sul",
       "rio": "Juruá",
       "nivelAtual": 13.62,
-      "nivelAlerta": 11.80,
-      "nivelInundacao": 13.0,
+      "nivelAlerta": 11.8,
+      "nivelInundacao": 13,
       "variacao24h": 0.4,
       "tendencia": "subindo",
-      "risco": "medio",
+      "risco": "alto",
       "atualizadoEm": "2025-03-13T06:00:00",
       "latitude": -7.6272,
       "longitude": -72.6762,
       "contatoDefesaCivil": "(68) 3322-2169",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 13.58}
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 13.58
+        }
       ]
     },
     "tarauaca": {
       "nome": "Tarauacá",
       "rio": "Tarauacá",
       "nivelAtual": 10.59,
-      "nivelAlerta": 8.50,
-      "nivelInundacao": 9.50,
+      "nivelAlerta": 8.5,
+      "nivelInundacao": 9.5,
       "variacao24h": -0.12,
       "tendencia": "descendo",
       "risco": "alto",
@@ -53,8 +70,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 10.71}
-        
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 10.71
+        }
       ]
     },
     "feijo": {
@@ -62,7 +81,7 @@
       "rio": "Envira",
       "nivelAtual": 11.64,
       "nivelAlerta": 11.5,
-      "nivelInundacao": 12.0,
+      "nivelInundacao": 12,
       "variacao24h": -0.04,
       "tendencia": "descendo",
       "risco": "medio",
@@ -72,8 +91,10 @@
       "contatoDefesaCivil": "(68) 3463-2614",
       "contatoBombeiros": "(68) 3463-2872",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 11.68}
-    
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 11.68
+        }
       ]
     },
     "aldeia-dos-patos": {
@@ -91,8 +112,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:30:00", "nivel": 6.28}
-      
+        {
+          "data": "2025-03-17T18:30:00",
+          "nivel": 6.28
+        }
       ]
     },
     "assis-brasil": {
@@ -110,7 +133,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 5.49}
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 5.49
+        }
       ]
     },
     "brasileia": {
@@ -128,8 +154,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 6.53}
-        
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 6.53
+        }
       ]
     },
     "xapuri-dolores": {
@@ -147,8 +175,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-13T11:00:00", "nivel": 7.47}
-        
+        {
+          "data": "2025-03-13T11:00:00",
+          "nivel": 7.47
+        }
       ]
     },
     "xapuri": {
@@ -159,22 +189,24 @@
       "nivelInundacao": 13.4,
       "variacao24h": -0.22,
       "tendencia": "descendo",
-      "risco": "medio",
+      "risco": "baixo",
       "atualizadoEm": "2025-03-18T06:00:00",
       "latitude": -10.6518,
       "longitude": -68.5017,
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 10.10}
-    
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 10.1
+        }
       ]
     },
     "capixaba": {
       "nome": "Capixaba",
       "rio": "Abunã",
       "nivelAtual": 10.25,
-      "nivelAlerta": 14.0,
+      "nivelAlerta": 14,
       "nivelInundacao": 14.7,
       "variacao24h": -1.61,
       "tendencia": "descendo",
@@ -185,8 +217,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 11.87}
-      
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 11.87
+        }
       ]
     },
     "espalha": {
@@ -204,8 +238,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 10.10}
-   
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 10.1
+        }
       ]
     },
     "riozinho-do-rola": {
@@ -213,7 +249,7 @@
       "rio": "Riozinho do Rola",
       "nivelAtual": 16.87,
       "nivelAlerta": 14.5,
-      "nivelInundacao": 15.0,
+      "nivelInundacao": 15,
       "variacao24h": 0.03,
       "tendencia": "subindo",
       "risco": "alto",
@@ -223,14 +259,17 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 16.84}
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 16.84
+        }
       ]
     },
     "porto-acre": {
       "nome": "Porto Acre",
       "rio": "Acre",
       "nivelAtual": 13.76,
-      "nivelAlerta": 12.0,
+      "nivelAlerta": 12,
       "nivelInundacao": 12.5,
       "variacao24h": 0.03,
       "tendencia": "subindo",
@@ -241,8 +280,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 13.73}
-       
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 13.73
+        }
       ]
     },
     "jordao": {
@@ -260,16 +301,18 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-17T18:00:00", "nivel": 8.95}
-
+        {
+          "data": "2025-03-17T18:00:00",
+          "nivel": 8.95
+        }
       ]
     },
     "porto-walter": {
       "nome": "Porto Walter",
       "rio": "Juruá",
       "nivelAtual": 10.05,
-      "nivelAlerta": 10.0,
-      "nivelInundacao": 11.0,
+      "nivelAlerta": 10,
+      "nivelInundacao": 11,
       "variacao24h": 0.14,
       "tendencia": "subindo",
       "risco": "medio",
@@ -279,8 +322,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-13T13:00:00", "nivel": 9.92}
-   
+        {
+          "data": "2025-03-13T13:00:00",
+          "nivel": 9.92
+        }
       ]
     },
     "marechal-thaumaturgo": {
@@ -288,7 +333,7 @@
       "rio": "Juruá",
       "nivelAtual": 11.52,
       "nivelAlerta": 11.7,
-      "nivelInundacao": 12.0,
+      "nivelInundacao": 12,
       "variacao24h": -0.19,
       "tendencia": "descendo",
       "risco": "baixo",
@@ -298,7 +343,10 @@
       "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
-        {"data": "2025-03-18T18:00:00", "nivel": 11.71}
+        {
+          "data": "2025-03-18T18:00:00",
+          "nivel": 11.71
+        }
       ]
     }
   },
@@ -319,8 +367,23 @@
       "abrigos": [
         "Parque de Exposições"
       ]
+    },
+    {
+      "id": "alerta-1742422383473",
+      "municipioId": "rio-branco",
+      "titulo": "ALERTA - Rio Branco",
+      "nivel": "baixo",
+      "descricao": "O nível do Rio Acre em Rio Branco atingiu 15,28 m, ultrapassando tanto o nível de alerta (13,50 m) quanto o nível de inundação (14,00 m).",
+      "instrucoes": [
+        "Moradores de áreas de risco devem ficar atentos",
+        "Mantenha documentos e objetos de valor em locais seguros",
+        "Evite áreas próximas às margens do rio",
+        "Siga as orientações da Defesa Civil"
+      ],
+      "abrigos": [
+        "Parque de Exposições"
+      ],
+      "emitidoEm": "2025-03-19T22:13:03.473Z"
     }
-    
-
   ]
 }
