@@ -1,5 +1,5 @@
 {
-  "ultimaAtualizacao": "2025/03/20 10:05:08",
+  "ultimaAtualizacao": "2025/03/20 13:32:00",
   "municipios": {
     "rio-branco": {
       "nome": "Rio Branco",
@@ -512,20 +512,20 @@
     "sena-madureira": {
       "nome": "Sena Madureira",
       "rio": "Iaco",
-      "nivelAtual": 10.09,
-      "nivelAlerta": 14.0,
+      "nivelAtual": 12.7,
+      "nivelAlerta": 14,
       "nivelInundacao": 15.2,
-      "variacao24h": -2.61,
+      "variacao24h": -0.06,
       "tendencia": "descendo",
       "risco": "baixo",
-      "atualizadoEm": "2025/03/19 18:00",
+      "atualizadoEm": "2025/03/20 06:00",
       "latitude": -9.0659,
       "longitude": -68.6571,
-      "contatoDefesaCivil": "(68) 3612-2427",
+      "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
         {
-          "id": "medicao-1742482868437",
+          "id": "medicao-1742495499596",
           "data": "2025/03/20 06:00",
           "nivel": 12.7,
           "tendencia": "descendo"
@@ -543,14 +543,14 @@
       "rio": "Purus",
       "nivelAtual": 11.3,
       "nivelAlerta": 13.5,
-      "nivelInundacao": 14.0,
+      "nivelInundacao": 14,
       "variacao24h": 1.21,
       "tendencia": "subindo",
       "risco": "baixo",
       "atualizadoEm": "2025/03/20 06:00",
       "latitude": -8.8367,
       "longitude": -69.2658,
-      "contatoDefesaCivil": "(68) 3611-1095",
+      "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
         {
@@ -571,15 +571,15 @@
       "nome": "Santa Rosa do Purus",
       "rio": "Purus",
       "nivelAtual": 8.54,
-      "nivelAlerta": 8.0,
-      "nivelInundacao": 9.0,
+      "nivelAlerta": 8,
+      "nivelInundacao": 9,
       "variacao24h": 0.27,
       "tendencia": "subindo",
       "risco": "baixo",
       "atualizadoEm": "2025/03/20 06:00",
       "latitude": -9.4472,
       "longitude": -70.4914,
-      "contatoDefesaCivil": "(68) 3615-1050",
+      "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
         {
@@ -600,7 +600,7 @@
       "nome": "Plácido de Castro",
       "rio": "Abunã",
       "nivelAtual": 13.03,
-      "nivelAlerta": 12.0,
+      "nivelAlerta": 12,
       "nivelInundacao": 12.5,
       "variacao24h": 0.01,
       "tendencia": "estavel",
@@ -608,7 +608,7 @@
       "atualizadoEm": "2025/03/20 06:00",
       "latitude": -10.3329,
       "longitude": -67.1871,
-      "contatoDefesaCivil": "(68) 3237-1137",
+      "contatoDefesaCivil": "199",
       "contatoBombeiros": "193",
       "historico": [
         {
