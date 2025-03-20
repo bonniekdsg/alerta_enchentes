@@ -1,21 +1,27 @@
 {
-  "ultimaAtualizacao": "2025/03/20 13:32:00",
+  "ultimaAtualizacao": "2025/03/20 14:52:55",
   "municipios": {
     "rio-branco": {
       "nome": "Rio Branco",
       "rio": "Acre",
-      "nivelAtual": 15.22,
+      "nivelAtual": 15.27,
       "nivelAlerta": 13.5,
       "nivelInundacao": 14,
-      "variacao24h": 0,
-      "tendencia": "estavel",
+      "variacao24h": 0.05,
+      "tendencia": "subindo",
       "risco": "alto",
-      "atualizadoEm": "2025/03/20 06:00",
+      "atualizadoEm": "2025/03/20 12:00",
       "latitude": -9.9753,
       "longitude": -67.8249,
       "contatoDefesaCivil": "(68) 99985-2018",
       "contatoBombeiros": "193",
       "historico": [
+        {
+          "id": "medicao-1742500359204",
+          "data": "2025/03/20 12:00",
+          "nivel": 15.27,
+          "tendencia": "subindo"
+        },
         {
           "id": "medicao-1742481916402",
           "data": "2025/03/20 06:00",
@@ -632,7 +638,7 @@
       "municipioId": "rio-branco",
       "titulo": "ALERTA - Rio Branco",
       "nivel": "alto",
-      "descricao": "O nível do Rio Acre em Rio Branco atingiu 15,22 m, ultrapassando tanto o nível de alerta (13,50 m) quanto o nível de inundação (14,00 m).",
+      "descricao": "O nível do Rio Acre em Rio Branco atingiu 15,27 m, ultrapassando tanto o nível de alerta (13,50 m) quanto o nível de inundação (14,00 m).",
       "instrucoes": [
         "Moradores de áreas de risco devem ficar atentos",
         "Mantenha documentos e objetos de valor em locais seguros",
@@ -642,7 +648,7 @@
       "abrigos": [
         "Parque de Exposições"
       ],
-      "emitidoEm": "2025-03-19T15:00:00"
+      "emitidoEm": "2025-03-20T12:00:00"
     }
   ]
 }
