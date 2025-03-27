@@ -2,8 +2,13 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atuação - Sistema de Monitoramento de Enchentes - Acre</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#1a1b23" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>Sistema de Monitoramento de Enchentes - Acre</title>
+    <link rel="icon" href="https://static.wixstatic.com/ficons/c96204_e567a922c44e440f8589c59322f43502~mv2.ico" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -75,68 +80,273 @@
             box-shadow: 0 10px 15px rgba(0,0,0,0.1);
         }
         
-        .stats-card {
-            text-align: center;
-            padding: 1.5rem;
-            border-radius: 10px;
-            color: white;
-            height: 100%;
-            background: linear-gradient(135deg, var(--primary-color), #006699);
-        }
-        
-        .stats-card .stat-icon {
-            font-size: 2.5rem;
-            margin-bottom: 0.75rem;
-            opacity: 0.9;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-        }
-        
-        .stats-card .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            line-height: 1.2;
-            margin-bottom: 0.5rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-            color: white;
-        }
-        
-        .stats-card .stat-label {
-            font-size: 1.1rem;
-            opacity: 0.95;
-            font-weight: 500;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-            color: white;
-        }
-        
-        .stats-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0,0,0,0.15);
-        }
-        
-        .stats-card:hover .stat-icon {
-            transform: scale(1.1);
-            transition: transform 0.3s ease;
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 1rem 1.25rem;
         }
         
         footer {
-            background: linear-gradient(135deg, var(--primary-color), #006699);
+            background-color: var(--dark-color);
             color: white;
-            padding: 2rem 0;
-            margin-top: 3rem;
+            padding: 3rem 0;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 767px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .footer-brand, 
+            .footer-links, 
+            .footer-contact {
+                margin-bottom: 2rem;
+            }
+            
+            .footer-brand {
+                align-items: center;
+            }
+            
+            .footer-brand p {
+                max-width: 100%;
+                text-align: center;
+            }
+            
+            .footer-brand .social-icons {
+                justify-content: center;
+            }
+            
+            .footer-contact {
+                align-items: center;
+            }
+            
+            .contact-list li {
+                justify-content: center;
+                margin-left: 0;
+            }
+            
+            .footer-links h3::after,
+            .footer-contact h3::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        .footer-brand .logo {
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: var(--color-text-secondary);
+            max-width: 200px;
+        }
+
+        .footer-brand .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .footer-brand .social-icons a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-brand .social-icons a:hover {
+            color: var(--color-emerald);
+            transform: translateY(-3px);
+        }
+
+        .footer-brand .social-icons a i {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        .footer-links h3,
+        .footer-contact h3 {
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+            color: var(--color-emerald);
+        }
+
+        .footer-links ul,
+        .footer-contact ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li,
+        .footer-contact li {
+            margin-bottom: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .footer-links li:hover,
+        .footer-contact li:hover {
+            transform: translateX(5px);
+        }
+
+        .footer-links a {
+            color: var(--color-text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 2px;
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--color-emerald);
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--color-emerald);
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .contact-list li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            margin-left: -0.75rem;
+        }
+
+        .contact-list li:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .contact-icon {
+            margin-right: 0.75rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            color: var(--color-emerald);
+            transition: all 0.3s ease;
+        }
+
+        .contact-list li:hover .contact-icon {
+            transform: scale(1.2);
+        }
+
+        .contact-list span, .contact-list .contact-link {
+            font-size: 0.95rem;
+        }
+
+        .contact-link {
+            color: var(--color-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-link:hover {
+            color: var(--color-emerald);
+            text-decoration: none;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border);
+            color: var(--color-text-secondary);
+        }
+        
+        /* Estilo para o ícone do MPAC */
+        .mpac-logo {
+          height: 20px;
+          width: auto;
+          transition: all 0.3s ease;
+        }
+
+        .mpac-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0.25rem 0.5rem;
+          transition: all 0.3s ease;
+        }
+
+        .mpac-icon:hover .mpac-logo {
+          content: url('https://static.wixstatic.com/media/c96204_14ad95c6a55e4d839ed6abcf48deafde~mv2.png');
+        }
+
+        /* Estilo para o ícone do Instagram */
+        .instagram-logo {
+          height: 20px;
+          width: auto;
+          transition: all 0.3s ease;
+        }
+
+        .instagram-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0.25rem 0.5rem;
+          transition: all 0.3s ease;
+        }
+
+        .instagram-icon:hover .instagram-logo {
+          content: url('https://static.wixstatic.com/media/c96204_8f5d9c11bb68466eb64dca4e43f79834~mv2.png');
         }
     </style>
 </head>
 <body>
-    <!-- Cabeçalho -->
+    <!-- Skip to content link for accessibility -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+    
+    <!-- Cabeçalho com ambas as logos -->
     <header class="header" role="banner">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
+                <!-- Logo original do Radar de Enchentes MPAC (lado esquerdo) -->
                 <div>
                     <img src="https://static.wixstatic.com/media/c96204_fecf1c65eaf64f22b97b4d31736b208c~mv2.png" alt="Radar de Enchentes MPAC" class="img-fluid" style="max-height: 120px;">
                 </div>
+                
+                <!-- Nova logo substituindo as informações de atualização (lado direito) -->
                 <div class="text-end d-none d-md-block">
-                    <p class="mb-0"><i class="fas fa-sync-alt me-1" aria-hidden="true"></i>Atualizado: <span id="ultima-atualizacao">14/03/2025, 09:30:00</span></p>
-                    <p class="mb-0"><small>Fonte: Defesa Civil</small></p>
+                    <img src="https://static.wixstatic.com/media/c96204_6a99e04abb104b29a5fdafcaec0aeffb~mv2.png" alt="Logo Secundária" class="img-fluid" style="max-height: 110px;">
                 </div>
             </div>
         </div>
@@ -154,18 +364,18 @@
                         <a class="nav-link" href="index.html">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="Atuacao.html">Atuação</a>
+                        <a class="nav-link active" href="Atuacao.html" aria-current="page">Atuação</a>
                     </li>
                 </ul>
                 <div class="ms-auto d-flex align-items-center">
-                    <a href="https://www.instagram.com/mpacre/" target="_blank" class="btn btn-sm btn-outline-light me-2" title="Instagram do MPAC">
-                        <i class="fab fa-instagram" aria-hidden="true"></i>
+                    <a href="https://www.instagram.com/mpacre/" target="_blank" class="btn btn-sm btn-outline-secondary me-2 instagram-icon" title="Instagram do MPAC">
+                        <img src="https://static.wixstatic.com/media/c96204_35e7835a480d49f29359e3246344af2d~mv2.png" alt="Instagram do MPAC" class="instagram-logo">
                     </a>
-                    <a href="https://www.mpac.mp.br/" target="_blank" class="btn btn-sm btn-outline-light me-2" title="Site do MPAC">
-                        <i class="fas fa-globe" aria-hidden="true"></i>
+                    <a href="https://www.mpac.mp.br/" target="_blank" class="btn btn-sm btn-outline-secondary me-2 mpac-icon" title="Site do MPAC">
+                        <img src="https://static.wixstatic.com/media/c96204_196f832d97854a339360f23efd193930~mv2.png" alt="Site do MPAC" class="mpac-logo">
                     </a>
                     <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-cog" aria-hidden="true"></i>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
@@ -180,168 +390,86 @@
     </nav>
 
     <!-- Conteúdo principal -->
-    <main class="container my-4">
+    <main class="container my-4" id="main-content">
         <div class="card mb-4">
             <div class="card-body">
-                <h2 class="mb-4">Atuação do MPAC</h2>
-                <p>O Ministério Público do Estado do Acre (MPAC) atua de forma preventiva e repressiva na proteção do meio ambiente e na defesa dos direitos da sociedade, especialmente em situações de emergência como enchentes e desastres naturais.</p>
-                
-                <!-- Estatísticas de Atuação -->
-                <div class="row mb-4 mt-4">
-                    <h4 class="mb-3">Estatísticas de Atuação</h4>
-                    <div class="col-md-4 col-sm-6 mb-3">
-                        <div class="card h-100">
-                            <div class="stats-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-home"></i>
-                                </div>
-                                <div class="stat-value">309</div>
-                                <div class="stat-label">Desabrigados Rio Branco</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 mb-3">
-                        <div class="card h-100">
-                            <div class="stats-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-building"></i>
-                                </div>
-                                <div class="stat-value">16</div>
-                                <div class="stat-label">Abrigos visitados</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 mb-3">
-                        <div class="card h-100">
-                            <div class="stats-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-clipboard-check"></i>
-                                </div>
-                                <div class="stat-value">56</div>
-                                <div class="stat-label">Vistorias realizadas</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 mb-3">
-                        <div class="card h-100">
-                            <div class="stats-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <div class="stat-value">475</div>
-                                <div class="stat-label">Demandas atendidas</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 mb-3">
-                        <div class="card h-100">
-                            <div class="stats-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="stat-value">50</div>
-                                <div class="stat-label">Parcialmente atendidas</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 mb-3">
-                        <div class="card h-100">
-                            <div class="stats-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-tasks"></i>
-                                </div>
-                                <div class="stat-value">179</div>
-                                <div class="stat-label">Em atendimento</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 mb-3">
-                        <div class="card h-100">
-                            <div class="stats-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <div class="stat-value">21</div>
-                                <div class="stat-label">Reuniões</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <h4 class="mt-4">Principais Ações</h4>
-                <ul>
-                    <li>Monitoramento e fiscalização das ações governamentais relacionadas à prevenção e resposta a desastres naturais</li>
-                    <li>Promoção de ações civis públicas para garantir a proteção ambiental e a segurança da população</li>
-                    <li>Articulação com órgãos públicos e sociedade civil para fortalecer a gestão de riscos</li>
-                    <li>Investigação de possíveis irregularidades na gestão de recursos destinados à prevenção e resposta a desastres</li>
-                </ul>
-                
-                <div class="alert alert-info mb-4">
-                    <h5><i class="fas fa-info-circle me-2"></i> Como denunciar</h5>
-                    <p>Se você tiver conhecimento de irregularidades relacionadas à gestão de recursos ou ações governamentais em situações de desastres naturais, entre em contato com o MPAC:</p>
-                    <p><i class="fas fa-phone me-2"></i> (68) 3213-1616</p>
-                    <p><i class="fas fa-envelope me-2"></i> ouvidoria@mpac.mp.br</p>
+                <h2 class="mb-4">Atuação do GPRD</h2>
+                <div class="ratio ratio-16x9">
+                    <iframe 
+                        src="https://app.powerbi.com/view?r=eyJrIjoiZGEyNDA3OTktNGEwNi00NTQ2LTg2M2UtNWJlMmRmMGMwZmMyIiwidCI6IjI2MWE0YjE1LTZjMDgtNDg0Yy05YTYzLTdjNTg4YjA3NmFlYyJ9" 
+                        title="Dashboard de Atuação do MPAC"
+                        allowfullscreen>
+                    </iframe>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Rodapé -->
-    <footer>
+    <!-- Footer -->
+    <footer class="bg-dark text-white mt-5 py-5">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <div class="d-flex gap-3">
-                        <a href="#" class="text-decoration-none" aria-label="Defesa Civil">
-                            <img src="https://via.placeholder.com/80x40?text=Defesa+Civil" alt="Logo Defesa Civil" width="80" height="40" class="bg-white rounded p-1">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h5>Sistema de Monitoramento de Enchentes</h5>
+                    <p class="text-white-50">Sistema de monitoramento e alerta para enchentes no estado do Acre.</p>
+                </div>
+                <div class="col-lg-2 col-md-4 col-6 mb-4 mb-md-0">
+                    <h5>Links</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="index.html" class="text-white text-decoration-none"><i class="fas fa-chart-line me-2"></i> Dashboard</a></li>
+                        <li class="mb-2"><a href="Atuacao.html" class="text-white text-decoration-none"><i class="fas fa-balance-scale me-2"></i> Atuação</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 col-6 mb-4 mb-md-0">
+                    <h5>Contatos de Emergência</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="tel:193" class="text-white text-decoration-none"><i class="fas fa-phone me-2"></i> Bombeiros: 193</a></li>
+                        <li class="mb-2"><a href="tel:68-3223-1177" class="text-white text-decoration-none"><i class="fas fa-phone me-2"></i> Defesa Civil: (68) 3223-1177</a></li>
+                        <li class="mb-2"><a href="tel:190" class="text-white text-decoration-none"><i class="fas fa-phone me-2"></i> Polícia Militar: 190</a></li>
+                        <li class="mb-2"><a href="tel:192" class="text-white text-decoration-none"><i class="fas fa-ambulance me-2"></i> SAMU: 192</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 col-12">
+                    <h5>Parceiros</h5>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#" class="bg-white rounded p-1 d-inline-block">
+                            <img src="https://via.placeholder.com/80x40?text=Logo1" alt="Parceiro 1" width="80" height="40">
                         </a>
-                        <a href="#" class="text-decoration-none" aria-label="Prefeitura de Rio Branco">
-                            <img src="https://via.placeholder.com/80x40?text=INMET" alt="Logo Prefeitura" width="80" height="40" class="bg-white rounded p-1">
+                        <a href="#" class="bg-white rounded p-1 d-inline-block">
+                            <img src="https://via.placeholder.com/80x40?text=Logo2" alt="Parceiro 2" width="80" height="40">
+                        </a>
+                        <a href="#" class="bg-white rounded p-1 d-inline-block">
+                            <img src="https://via.placeholder.com/80x40?text=Logo3" alt="Parceiro 3" width="80" height="40">
                         </a>
                     </div>
                 </div>
             </div>
-            <div class="border-top border-secondary pt-4 mt-4">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <p class="text-white fw-normal mb-0" style="font-weight: 400 !important; font-size: 0.85rem !important;">&copy; 2025 Desenvolvido por Seringal Lab - Laboratório de Inovação - Todos os direitos reservados.</p>
-                    </div>
-                </div>
+            <hr class="my-4 bg-secondary">
+            <div class="text-center">
+                <p class="mb-0 text-white-50">&copy; 2025 Desenvolvido por Seringal Lab - Laboratório de Inovação - Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Modal de Detalhes -->
-    <div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
+    <!-- Modal de Ajuda -->
+    <div class="modal fade" id="ajuda-modal" tabindex="-1" aria-labelledby="ajudaModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="detalhesModalLabel">Detalhes da Estatística</h5>
+                    <h5 class="modal-title" id="ajudaModalLabel">Ajuda</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle mb-3 text-muted" id="modalCategoria"></h6>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <i class="stat-icon me-3" id="modalIcon"></i>
-                                        <h2 class="mb-0" id="modalValor"></h2>
-                                    </div>
-                                    <p class="card-text" id="modalDescricao"></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-subtitle mb-3">Informações Adicionais</h6>
-                                    <div id="modalInfoAdicional"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <h4>Como usar o sistema</h4>
+                    <p>Este sistema fornece informações sobre monitoramento de rios e alertas de enchentes no estado do Acre.</p>
+                    
+                    <h5 class="mt-4">Recursos disponíveis:</h5>
+                    <ul>
+                        <li>Visualização de níveis dos rios em tempo real</li>
+                        <li>Alertas de inundação</li>
+                        <li>Histórico de medições</li>
+                        <li>Contatos de emergência</li>
+                    </ul>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -352,158 +480,17 @@
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        // Dados dos cards
-        const cardsData = {
-            'desabrigados': {
-                titulo: 'Desabrigados em Rio Branco',
-                valor: 309,
-                icone: 'fas fa-home',
-                descricao: 'Número total de pessoas desabrigadas devido às enchentes em Rio Branco.',
-                infoAdicional: `
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> Principais áreas afetadas:
-                            <ul>
-                                <li>Bairro 6 de Agosto</li>
-                                <li>Bairro Base</li>
-                                <li>Baixada da Sobral</li>
-                            </ul>
-                        </li>
-                        <li class="mb-2"><i class="fas fa-bed me-2"></i> Capacidade total dos abrigos: 500 pessoas</li>
-                        <li class="mb-2"><i class="fas fa-users me-2"></i> Famílias atendidas: 87</li>
-                    </ul>`
-            },
-            'abrigos': {
-                titulo: 'Abrigos Visitados',
-                valor: 16,
-                icone: 'fas fa-building',
-                descricao: 'Total de abrigos temporários visitados e monitorados pelo MPAC.',
-                infoAdicional: `
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-check-circle me-2"></i> Condições verificadas:
-                            <ul>
-                                <li>Estrutura física</li>
-                                <li>Condições sanitárias</li>
-                                <li>Alimentação</li>
-                                <li>Assistência médica</li>
-                            </ul>
-                        </li>
-                        <li class="mb-2"><i class="fas fa-calendar me-2"></i> Frequência de visitas: Semanal</li>
-                    </ul>`
-            },
-            'vistorias': {
-                titulo: 'Vistorias Realizadas',
-                valor: 56,
-                icone: 'fas fa-clipboard-check',
-                descricao: 'Número de vistorias técnicas realizadas em áreas de risco.',
-                infoAdicional: `
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-chart-pie me-2"></i> Tipos de vistoria:
-                            <ul>
-                                <li>Estrutural: 25</li>
-                                <li>Ambiental: 18</li>
-                                <li>Sanitária: 13</li>
-                            </ul>
-                        </li>
-                        <li class="mb-2"><i class="fas fa-file-alt me-2"></i> Relatórios emitidos: 56</li>
-                    </ul>`
-            },
-            'demandas': {
-                titulo: 'Demandas Atendidas',
-                valor: 475,
-                icone: 'fas fa-check-circle',
-                descricao: 'Total de solicitações e demandas atendidas pelo MPAC.',
-                infoAdicional: `
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-tags me-2"></i> Categorias:
-                            <ul>
-                                <li>Assistência social: 180</li>
-                                <li>Infraestrutura: 145</li>
-                                <li>Saúde: 95</li>
-                                <li>Outros: 55</li>
-                            </ul>
-                        </li>
-                        <li class="mb-2"><i class="fas fa-clock me-2"></i> Tempo médio de atendimento: 48h</li>
-                    </ul>`
-            },
-            'parciais': {
-                titulo: 'Demandas Parcialmente Atendidas',
-                valor: 50,
-                icone: 'fas fa-clock',
-                descricao: 'Demandas em processo de atendimento ou parcialmente resolvidas.',
-                infoAdicional: `
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-hourglass-half me-2"></i> Status:
-                            <ul>
-                                <li>Em análise: 20</li>
-                                <li>Em execução: 25</li>
-                                <li>Aguardando recursos: 5</li>
-                            </ul>
-                        </li>
-                        <li class="mb-2"><i class="fas fa-calendar-alt me-2"></i> Previsão de conclusão: 15 dias</li>
-                    </ul>`
-            },
-            'atendimento': {
-                titulo: 'Em Atendimento',
-                valor: 179,
-                icone: 'fas fa-tasks',
-                descricao: 'Processos e demandas atualmente em atendimento.',
-                infoAdicional: `
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-list-alt me-2"></i> Distribuição:
-                            <ul>
-                                <li>Fase inicial: 85</li>
-                                <li>Em andamento: 65</li>
-                                <li>Fase final: 29</li>
-                            </ul>
-                        </li>
-                        <li class="mb-2"><i class="fas fa-user-clock me-2"></i> Tempo médio de processo: 30 dias</li>
-                    </ul>`
-            },
-            'reunioes': {
-                titulo: 'Reuniões Realizadas',
-                valor: 21,
-                icone: 'fas fa-users',
-                descricao: 'Encontros e reuniões de coordenação e planejamento.',
-                infoAdicional: `
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-handshake me-2"></i> Participantes:
-                            <ul>
-                                <li>Defesa Civil</li>
-                                <li>Corpo de Bombeiros</li>
-                                <li>Secretarias Municipais</li>
-                                <li>Representantes Comunitários</li>
-                            </ul>
-                        </li>
-                        <li class="mb-2"><i class="fas fa-file-signature me-2"></i> Acordos firmados: 15</li>
-                    </ul>`
-            }
-        };
-
-        // Adicionar evento de clique aos cards
-        document.querySelectorAll('.stats-card').forEach((card, index) => {
-            card.style.cursor = 'pointer';
-            card.addEventListener('click', () => {
-                const cardId = Object.keys(cardsData)[index];
-                const data = cardsData[cardId];
-                
-                // Atualizar conteúdo do modal
-                document.getElementById('detalhesModalLabel').textContent = data.titulo;
-                document.getElementById('modalCategoria').textContent = data.titulo;
-                document.getElementById('modalValor').textContent = data.valor;
-                document.getElementById('modalIcon').className = data.icone + ' fa-3x text-primary';
-                document.getElementById('modalDescricao').textContent = data.descricao;
-                document.getElementById('modalInfoAdicional').innerHTML = data.infoAdicional;
-                
-                // Abrir modal
-                const modal = new bootstrap.Modal(document.getElementById('detalhesModal'));
-                modal.show();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons
+            lucide.createIcons();
+            
+            // Toggle dark mode
+            document.getElementById('toggle-dark-mode').addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
             });
-        });
-
-        // Alternar tema escuro
-        document.getElementById('toggle-dark-mode').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
         });
     </script>
 </body>
